@@ -5,6 +5,8 @@
 2. A second agent reviews and leaves PR review feedback.
 3. At least one human approval is required before merge.
 
+- Optional: add a third reviewer/contributor agent (e.g., Claude Opus) for complex changes.
+
 ## Branch/PR rules
 - Do not push directly to `main`.
 - Use feature branches and PRs.
