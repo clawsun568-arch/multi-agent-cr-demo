@@ -29,7 +29,8 @@ function App() {
         return res.json();
       })
       .then(data => {
-        setCats(data.cats || []);
+        if (!Array.isArray(data.cats)) throw new Error('Invalid data format');
+        setCats(data.cats);
         setLoading(false);
       })
       .catch(err => {

@@ -12,9 +12,9 @@ export function calculateAge(birthDate: string): string {
   const birth = new Date(birthDate);
   const now = new Date();
   
-  // Validate: future dates
-  if (birth > now) {
-    return 'Not born yet';
+  // Validate: reject future dates and invalid dates
+  if (isNaN(birth.getTime()) || birth > now) {
+    return 'Unknown age';
   }
   
   const yearDiff = now.getFullYear() - birth.getFullYear();

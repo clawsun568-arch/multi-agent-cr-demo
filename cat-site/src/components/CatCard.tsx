@@ -18,7 +18,7 @@ export function CatCard({ cat }: CatCardProps) {
   return (
     <article 
       className="cat-card"
-      tabIndex={0}  /* Makes card keyboard navigable for accessibility */
+      tabIndex={-1}  /* Disabled: non-interactive element should not be tabbable */
       aria-label={`${cat.name}, ${isOwned && cat.birthDate ? calculateAge(cat.birthDate) : 'planned cat'}`}
     >
       <div className="cat-image-container">
@@ -26,7 +26,8 @@ export function CatCard({ cat }: CatCardProps) {
           src={cat.photoUrl} 
           alt={`Photo of ${cat.name}${isOwned ? '' : ' (placeholder)'}`}
           className="cat-image"
-          loading="lazy"  /* Improves page load performance */
+          loading="lazy"
+          onError={(e) => { e.currentTarget.src = '/images/placeholder-cat.jpg'; }}
         />
         <span className={`status-badge ${cat.status}`}>
           {isOwned ? 'Owned' : 'Planned'}
