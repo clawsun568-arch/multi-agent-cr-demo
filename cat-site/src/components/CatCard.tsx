@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Cat } from '../data/types';
+import { Cat, isValidPhotoUrl } from '../data/types';
 import { calculateAge } from '../utils/ageCalculator';
 
 interface CatCardProps {
@@ -16,7 +16,7 @@ export function CatCard({ cat }: CatCardProps) {
       aria-label={`${cat.name}, ${isOwned && cat.birthDate ? calculateAge(cat.birthDate) : 'planned cat'}`}
     >
       <div className={`cat-image-container ${imageError ? 'no-image' : ''}`}>
-        {!imageError && (
+        {!imageError && isValidPhotoUrl(cat.photoUrl) && (
           <img 
             src={cat.photoUrl} 
             alt={`Photo of ${cat.name}${isOwned ? '' : ' (placeholder)'}`}

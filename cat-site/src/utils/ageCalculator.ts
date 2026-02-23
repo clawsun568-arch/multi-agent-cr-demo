@@ -9,7 +9,8 @@
  * Storing birthDate and computing on display keeps it accurate.
  */
 export function calculateAge(birthDate: string): string {
-  const birth = new Date(birthDate);
+  // Parse as UTC to avoid timezone issues
+  const birth = new Date(`${birthDate}T00:00:00Z`);
   const now = new Date();
   
   // Validate: reject future dates and invalid dates

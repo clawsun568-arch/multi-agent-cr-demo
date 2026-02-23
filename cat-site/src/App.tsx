@@ -19,9 +19,10 @@ function App() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    // Fetch cat data from JSON file on mount
-    // AbortController prevents memory leaks if component unmounts during fetch
     const controller = new AbortController();
+    
+    // Add timeout to prevent hanging
+    const timeout = setTimeout(() => controller.abort(), 10000);
     
     fetch('/cat-data.json', { signal: controller.signal })
       .then(res => {
@@ -30,19 +31,22 @@ function App() {
       })
       .then(data => {
         if (!Array.isArray(data.cats)) throw new Error('Invalid data format');
+        clearTimeout(timeout);
         setCats(data.cats);
         setLoading(false);
       })
       .catch(err => {
-        // Ignore abort errors (component unmounted)
+        clearTimeout(timeout);
         if (err.name !== 'AbortError') {
-          setError(err.message);
+          setError('Failed to load cat data. Please try again.');
           setLoading(false);
         }
       });
     
-    // Cleanup: abort fetch if component unmounts
-    return () => controller.abort();
+    return () => {
+      clearTimeout(timeout);
+      controller.abort();
+    };
   }, []);
 
   // Split cats into two groups for display
