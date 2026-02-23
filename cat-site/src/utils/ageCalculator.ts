@@ -30,11 +30,6 @@ export function calculateAge(birthDate: string): string {
     ? monthDiff + 12 
     : monthDiff;
   
-  // Final day adjustment for month calculation
-  const finalDayDiff = dayDiff < 0 
-    ? dayDiff + 30 // approximate
-    : dayDiff;
-  
   if (adjustedYearDiff > 0) {
     return `${adjustedYearDiff} year${adjustedYearDiff === 1 ? '' : 's'} old`;
   }
