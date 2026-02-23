@@ -18,7 +18,6 @@ export function CatCard({ cat }: CatCardProps) {
   return (
     <article 
       className="cat-card"
-      tabIndex={-1}  /* Disabled: non-interactive element should not be tabbable */
       aria-label={`${cat.name}, ${isOwned && cat.birthDate ? calculateAge(cat.birthDate) : 'planned cat'}`}
     >
       <div className="cat-image-container">
@@ -27,7 +26,10 @@ export function CatCard({ cat }: CatCardProps) {
           alt={`Photo of ${cat.name}${isOwned ? '' : ' (placeholder)'}`}
           className="cat-image"
           loading="lazy"
-          onError={(e) => { e.currentTarget.src = '/images/placeholder-cat.jpg'; }}
+          onError={(e) => { 
+            e.currentTarget.style.display = 'none';
+            e.currentTarget.parentElement?.classList.add('no-image');
+          }}
         />
         <span className={`status-badge ${cat.status}`}>
           {isOwned ? 'Owned' : 'Planned'}

@@ -78,7 +78,6 @@ main {
   box-shadow: var(--shadow);
   overflow: hidden;
   transition: transform 0.2s, box-shadow 0.2s;
-  cursor: pointer;
 }
 
 .cat-card:hover,
