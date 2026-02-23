@@ -19,7 +19,7 @@ export function CatCard({ cat }: CatCardProps) {
     <article 
       className="cat-card"
       tabIndex={0}  /* Makes card keyboard navigable for accessibility */
-      aria-label={`${cat.name}, ${isOwned ? calculateAge(cat.birthDate!) : 'planned cat'}`}
+      aria-label={`${cat.name}, ${isOwned && cat.birthDate ? calculateAge(cat.birthDate) : 'planned cat'}`}
     >
       <div className="cat-image-container">
         <img 
