@@ -37,10 +37,12 @@ function App() {
       })
       .catch(err => {
         clearTimeout(timeout);
-        if (err.name !== 'AbortError') {
+        if (err.name === 'AbortError') {
+          setError('Request timed out. Please try again.');
+        } else {
           setError('Failed to load cat data. Please try again.');
-          setLoading(false);
         }
+        setLoading(false);
       });
     
     return () => {

@@ -18,9 +18,10 @@ export function calculateAge(birthDate: string): string {
     return 'Unknown age';
   }
   
-  const yearDiff = now.getFullYear() - birth.getFullYear();
-  const monthDiff = now.getMonth() - birth.getMonth();
-  const dayDiff = now.getDate() - birth.getDate();
+  // Calculate difference in UTC
+  const yearDiff = now.getUTCFullYear() - birth.getUTCFullYear();
+  const monthDiff = now.getUTCMonth() - birth.getUTCMonth();
+  const dayDiff = now.getUTCDate() - birth.getUTCDate();
   
   // Adjust if birthday hasn't happened this year yet
   const adjustedYearDiff = monthDiff < 0 || (monthDiff === 0 && dayDiff < 0) 
