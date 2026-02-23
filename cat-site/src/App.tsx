@@ -20,8 +20,10 @@ function App() {
 
   useEffect(() => {
     // Fetch cat data from JSON file on mount
-    // This is a static fetch - no backend server needed
-    fetch('/cat-data.json')
+    // AbortController prevents memory leaks if component unmounts during fetch
+    const controller = new AbortController();
+    
+    fetch('/cat-data.json', { signal: controller.signal })
       .then(res => {
         if (!res.ok) throw new Error('Failed to load cat data');
         return res.json();
@@ -31,9 +33,15 @@ function App() {
         setLoading(false);
       })
       .catch(err => {
-        setError(err.message);
-        setLoading(false);
+        // Ignore abort errors (component unmounted)
+        if (err.name !== 'AbortError') {
+          setError(err.message);
+          setLoading(false);
+        }
       });
+    
+    // Cleanup: abort fetch if component unmounts
+    return () => controller.abort();
   }, []);
 
   // Split cats into two groups for display
