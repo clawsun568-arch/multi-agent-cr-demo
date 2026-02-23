@@ -20,6 +20,11 @@ export interface Cat {
 // Validate photoUrl to prevent XSS via javascript: URLs
 export function isValidPhotoUrl(url: string): boolean {
   if (!url) return false;
+  const lower = url.trim().toLowerCase();
+  // Block dangerous protocols
+  if (lower.startsWith('javascript:') || lower.startsWith('data:') || lower.startsWith('vbscript:')) {
+    return false;
+  }
   // Allow relative paths (start with /) or http/https URLs
   return url.startsWith('/') || url.startsWith('http://') || url.startsWith('https://');
 }

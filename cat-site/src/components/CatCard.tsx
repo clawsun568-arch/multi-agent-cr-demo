@@ -13,6 +13,7 @@ export function CatCard({ cat }: CatCardProps) {
   return (
     <article 
       className="cat-card"
+      tabIndex={0}
       aria-label={`${cat.name}, ${isOwned ? (cat.birthDate ? calculateAge(cat.birthDate) : 'age unknown') : 'planned cat'}`}
     >
       <div className={`cat-image-container ${imageError || !isValidPhotoUrl(cat.photoUrl) ? 'no-image' : ''}`}>
@@ -38,8 +39,8 @@ export function CatCard({ cat }: CatCardProps) {
         )}
         
         <p className="cat-age">
-          {isOwned && cat.birthDate 
-            ? calculateAge(cat.birthDate)
+          {isOwned 
+            ? (cat.birthDate ? calculateAge(cat.birthDate) : 'Age unknown')
             : `Expected: ${cat.expectedDate ?? 'Unknown'}`
           }
         </p>
