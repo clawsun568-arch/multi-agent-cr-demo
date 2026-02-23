@@ -2,7 +2,7 @@
  * Calculates age string from birth date
  * Example: "2022-03-15" → "2 years old"
  * Example: "2024-01-10" → "4 months old"
- * Example: "2025-02-20" (future) → "Not born yet"
+ * Example: "2025-02-20" (future) → "Unknown age"
  * Example: "2025-02-10" (2 weeks old) → "2 weeks old"
  * 
  * Why not store age directly? Age changes every day!

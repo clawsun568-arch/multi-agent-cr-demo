@@ -1,36 +1,30 @@
+import { useState } from 'react';
 import { Cat } from '../data/types';
 import { calculateAge } from '../utils/ageCalculator';
 
-/**
- * CatCard - Displays a single cat in a card format
- * Used for both owned cats and planned cats
- * 
- * Props:
- *   - cat: The cat data to display
- */
 interface CatCardProps {
   cat: Cat;
 }
 
 export function CatCard({ cat }: CatCardProps) {
   const isOwned = cat.status === 'owned';
+  const [imageError, setImageError] = useState(false);
   
   return (
     <article 
       className="cat-card"
       aria-label={`${cat.name}, ${isOwned && cat.birthDate ? calculateAge(cat.birthDate) : 'planned cat'}`}
     >
-      <div className="cat-image-container">
-        <img 
-          src={cat.photoUrl} 
-          alt={`Photo of ${cat.name}${isOwned ? '' : ' (placeholder)'}`}
-          className="cat-image"
-          loading="lazy"
-          onError={(e) => { 
-            e.currentTarget.style.display = 'none';
-            e.currentTarget.parentElement?.classList.add('no-image');
-          }}
-        />
+      <div className={`cat-image-container ${imageError ? 'no-image' : ''}`}>
+        {!imageError && (
+          <img 
+            src={cat.photoUrl} 
+            alt={`Photo of ${cat.name}${isOwned ? '' : ' (placeholder)'}`}
+            className="cat-image"
+            loading="lazy"
+            onError={() => setImageError(true)}
+          />
+        )}
         <span className={`status-badge ${cat.status}`}>
           {isOwned ? 'Owned' : 'Planned'}
         </span>
@@ -45,8 +39,8 @@ export function CatCard({ cat }: CatCardProps) {
         
         <p className="cat-age">
           {isOwned && cat.birthDate 
-            ? calculateAge(cat.birthDate)  /* Compute age from birthDate */
-            : `Expected: ${cat.expectedDate}`
+            ? calculateAge(cat.birthDate)
+            : `Expected: ${cat.expectedDate ?? 'Unknown'}`
           }
         </p>
         
