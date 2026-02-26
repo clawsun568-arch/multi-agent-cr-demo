@@ -18,19 +18,17 @@ export function CatCard({ cat, onClick }: CatCardProps) {
   // Check if photo URL is valid (not empty and starts with http)
   const hasValidPhoto = cat.photoUrl && cat.photoUrl.startsWith('http');
   
+  // Build accessible label
+  const ageLabel = isOwned 
+    ? (cat.birthDate ? calculateAge(cat.birthDate) : 'age unknown')
+    : 'planned cat';
+  
   return (
-    <article 
+    <button 
       className="cat-card"
       onClick={onClick}
-      onKeyDown={(e) => {
-        if (e.key === 'Enter' || e.key === ' ') {
-          e.preventDefault();
-          onClick();
-        }
-      }}
-      tabIndex={0}
-      role="button"
-      aria-label={`View details for ${cat.name}, ${isOwned ? (cat.birthDate ? calculateAge(cat.birthDate) : 'age unknown') : 'planned cat'}`}
+      aria-label={`View details for ${cat.name}, ${ageLabel}`}
+      type="button"
     >
       <div className={`cat-image-container ${imageError || !hasValidPhoto ? 'no-image' : ''}`}>
         {!imageError && hasValidPhoto ? (
@@ -61,7 +59,7 @@ export function CatCard({ cat, onClick }: CatCardProps) {
         <p className="cat-meta">
           {isOwned 
             ? (cat.birthDate ? calculateAge(cat.birthDate) : 'Age unknown')
-            : `Expected: ${cat.expectedDate ?? 'TBD'}`
+            : `Expected: ${cat.expectedDate || 'TBD'}`
           }
         </p>
         
@@ -74,6 +72,6 @@ export function CatCard({ cat, onClick }: CatCardProps) {
         
         <span className="view-details">View Details →</span>
       </div>
-    </article>
+    </button>
   );
 }

@@ -1,4 +1,3 @@
-import React from 'react';
 import { Cat } from '../data/types';
 import { calculateAge } from '../utils/ageCalculator';
 
@@ -17,11 +16,16 @@ interface CatProfilePageProps {
  * - Status (owned/planned)
  * - Parent lineage (if applicable)
  */
-export const CatProfilePage: React.FC<CatProfilePageProps> = ({ cat, onBack }) => {
+export const CatProfilePage = ({ cat, onBack }: CatProfilePageProps) => {
   const isOwned = cat.status === 'owned';
   const age = isOwned && cat.birthDate 
     ? calculateAge(cat.birthDate)
     : null;
+
+  // Handle contact button click
+  const handleContactClick = () => {
+    window.location.href = 'mailto:contact@example.com?subject=Interest in ' + cat.name;
+  };
 
   return (
     <article className="cat-profile">
@@ -30,6 +34,7 @@ export const CatProfilePage: React.FC<CatProfilePageProps> = ({ cat, onBack }) =
         onClick={onBack}
         className="back-button"
         aria-label="Go back to cat list"
+        type="button"
       >
         ← Back to Cats
       </button>
@@ -86,11 +91,11 @@ export const CatProfilePage: React.FC<CatProfilePageProps> = ({ cat, onBack }) =
           <section className="profile-section">
             <h2>Photo Gallery</h2>
             <div className="photo-gallery">
-              {cat.gallery.map((photo, index) => (
-                <div key={index} className="gallery-item">
+              {cat.gallery.map((photo) => (
+                <div key={photo.url} className="gallery-item">
                   <img
                     src={photo.url}
-                    alt={photo.caption || `${cat.name} photo ${index + 1}`}
+                    alt={photo.caption || `${cat.name} photo`}
                     loading="lazy"
                   />
                   {photo.caption && (
@@ -125,8 +130,17 @@ export const CatProfilePage: React.FC<CatProfilePageProps> = ({ cat, onBack }) =
         {!isOwned && (
           <section className="profile-section cta-section">
             <h2>Interested in {cat.name}?</h2>
-            <p>This kitten is expected to arrive around {cat.expectedDate}.</p>
-            <button className="contact-button">
+            <p>
+              {cat.expectedDate 
+                ? `This kitten is expected to arrive around ${cat.expectedDate}.`
+                : 'This kitten is coming soon. Contact us for updates.'
+              }
+            </p>
+            <button 
+              className="contact-button"
+              onClick={handleContactClick}
+              type="button"
+            >
               Contact Us for Updates
             </button>
           </section>

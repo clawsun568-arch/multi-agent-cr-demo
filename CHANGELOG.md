@@ -4,13 +4,6 @@ All notable changes to the Cat Website project.
 
 ## [Unreleased]
 
-### In Progress
-- Cat profile detail pages (PR #4)
-  - Individual cat profile view
-  - Photo gallery
-  - Parent lineage display
-  - Clickable cards from list view
-
 ### Planned
 - Hero section with carousel
 - Navigation header
@@ -22,13 +15,22 @@ All notable changes to the Cat Website project.
 ## [1.1.0] - 2026-02-26
 
 ### Added
-- Cat profile detail pages
+- Cat profile detail pages (PR #5)
   - `CatProfilePage` component with full cat information
   - Photo gallery support in profile view
   - Parent lineage display (father/mother)
   - Enhanced `CatCard` with click-to-view functionality
   - Navigation between list and detail views
   - Updated TypeScript types with Photo interface
+
+### Fixed
+- Scoped CSS classes to avoid collision between card and profile styles
+- Changed `CatCard` from `article role="button"` to proper `<button>` element
+- Fixed gallery key prop to use `photo.url` instead of index
+- Removed unnecessary `import React` (React 17+ JSX transform)
+- Removed `isMounted` ref anti-pattern (AbortController handles cleanup)
+- Added proper null guards for `expectedDate` in CTA section
+- Added working `onClick` handler to contact button
 
 ## [1.0.0] - 2026-02-26
 

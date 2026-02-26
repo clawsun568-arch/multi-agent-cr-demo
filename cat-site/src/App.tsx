@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { Cat } from './data/types';
 import { CatSection } from './components/CatSection';
 import { CatProfilePage } from './components/CatProfilePage';
@@ -16,12 +16,9 @@ function App() {
   
   // Navigation state
   const [selectedCatId, setSelectedCatId] = useState<string | null>(null);
-  
-  const isMounted = useRef(true);
 
   // Load cat data
   useEffect(() => {
-    isMounted.current = true;
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), 10000);
     
@@ -33,25 +30,20 @@ function App() {
       .then(data => {
         if (!Array.isArray(data.cats)) throw new Error('Invalid data format');
         clearTimeout(timeout);
-        if (isMounted.current) {
-          setCats(data.cats);
-          setLoading(false);
-        }
+        setCats(data.cats);
+        setLoading(false);
       })
       .catch(err => {
         clearTimeout(timeout);
-        if (isMounted.current) {
-          if (err.name === 'AbortError') {
-            setError('Request timed out. Please try again.');
-          } else {
-            setError('Failed to load cat data. Please try again.');
-          }
-          setLoading(false);
+        if (err.name === 'AbortError') {
+          setError('Request timed out. Please try again.');
+        } else {
+          setError('Failed to load cat data. Please try again.');
         }
+        setLoading(false);
       });
     
     return () => {
-      isMounted.current = false;
       clearTimeout(timeout);
       controller.abort();
     };
