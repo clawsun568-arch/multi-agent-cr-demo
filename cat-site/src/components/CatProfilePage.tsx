@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Cat } from '../data/types';
 import { calculateAge } from '../utils/ageCalculator';
 
@@ -18,19 +19,26 @@ interface CatProfilePageProps {
  */
 export const CatProfilePage = ({ cat, onBack }: CatProfilePageProps) => {
   const isOwned = cat.status === 'owned';
-  const age = isOwned && cat.birthDate 
+  const [imageError, setImageError] = useState(false);
+  const age = isOwned && cat.birthDate
     ? calculateAge(cat.birthDate)
     : null;
 
+  const hasValidPhoto = Boolean(cat.photoUrl);
+
   // Handle contact button click
   const handleContactClick = () => {
-    window.location.href = 'mailto:contact@example.com?subject=Interest in ' + cat.name;
+    const subject = encodeURIComponent(`Interest in ${cat.name}`);
+    window.location.href = `mailto:contact@example.com?subject=${subject}`;
   };
+
+  // Build alt text without undefined fields
+  const altParts = [cat.name, cat.breed, cat.gender].filter(Boolean);
 
   return (
     <article className="cat-profile">
       {/* Back button */}
-      <button 
+      <button
         onClick={onBack}
         className="back-button"
         aria-label="Go back to cat list"
@@ -41,13 +49,20 @@ export const CatProfilePage = ({ cat, onBack }: CatProfilePageProps) => {
 
       {/* Hero Section with large photo */}
       <header className="cat-profile-hero">
-        <div className="hero-image-container">
-          <img
-            src={cat.photoUrl}
-            alt={`${cat.name}, ${cat.breed} ${cat.gender}`}
-            className="hero-image"
-            loading="eager"
-          />
+        <div className={`hero-image-container ${imageError || !hasValidPhoto ? 'no-image' : ''}`}>
+          {!imageError && hasValidPhoto ? (
+            <img
+              src={cat.photoUrl}
+              alt={altParts.join(', ')}
+              className="hero-image"
+              loading="eager"
+              onError={() => setImageError(true)}
+            />
+          ) : (
+            <div className="image-placeholder hero-placeholder">
+              <span>🐱</span>
+            </div>
+          )}
           <span className={`status-badge ${cat.status}`}>
             {isOwned ? 'Owned' : 'Coming Soon'}
           </span>
@@ -60,11 +75,13 @@ export const CatProfilePage = ({ cat, onBack }: CatProfilePageProps) => {
         <section className="profile-header">
           <h1 className="cat-name">{cat.name}</h1>
           <p className="cat-breed">{cat.breed}</p>
-          
+
           <div className="cat-meta">
-            <span className="meta-item">
-              <strong>Gender:</strong> {cat.gender}
-            </span>
+            {cat.gender && (
+              <span className="meta-item">
+                <strong>Gender:</strong> {cat.gender}
+              </span>
+            )}
             {age && (
               <span className="meta-item">
                 <strong>Age:</strong> {age}
