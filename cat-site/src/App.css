@@ -1,0 +1,210 @@
+/* CSS Reset and Base Styles */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  /* CSS Variables for consistent theming */
+  --color-bg: #fafafa;
+  --color-surface: #ffffff;
+  --color-text: #333333;
+  --color-text-muted: #666666;
+  --color-border: #e0e0e0;
+  --color-primary: #ff6b6b;
+  --color-owned: #4ecdc4;
+  --color-planned: #ffe66d;
+  --shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  --radius: 12px;
+  --max-width: 1200px;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  line-height: 1.6;
+}
+
+/* Header Styles */
+.app-header {
+  text-align: center;
+  padding: 2rem 1rem;
+  background: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.app-header h1 {
+  font-size: 2.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.tagline {
+  color: var(--color-text-muted);
+  font-size: 1.1rem;
+}
+
+/* Main Content */
+main {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 2rem 1rem;
+}
+
+/* Section Styles */
+.cat-section {
+  margin-bottom: 3rem;
+}
+
+.section-title {
+  font-size: 1.75rem;
+  margin-bottom: 1.5rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid var(--color-border);
+}
+
+/* Grid Layout - Responsive */
+.cat-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.5rem;
+}
+
+/* Card Styles */
+.cat-card {
+  background: var(--color-surface);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.cat-card:hover,
+.cat-card:focus {
+  transform: translateY(-4px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.cat-image-container {
+  position: relative;
+  width: 100%;
+  height: 200px;
+  overflow: hidden;
+}
+
+.cat-image-container.no-image {
+  background: linear-gradient(135deg, #e0e0e0, #f0f0f0);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cat-image-container.no-image::after {
+  content: '🐱';
+  font-size: 4rem;
+  opacity: 0.3;
+}
+
+.cat-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.status-badge {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.status-badge.owned {
+  background: var(--color-owned);
+  color: white;
+}
+
+.status-badge.planned {
+  background: var(--color-planned);
+  color: #333;
+}
+
+.cat-info {
+  padding: 1.25rem;
+}
+
+.cat-name {
+  font-size: 1.25rem;
+  margin-bottom: 0.25rem;
+}
+
+.cat-breed {
+  color: var(--color-text-muted);
+  font-size: 0.9rem;
+  margin-bottom: 0.5rem;
+}
+
+.cat-age {
+  font-weight: 600;
+  color: var(--color-primary);
+  margin-bottom: 0.5rem;
+}
+
+.cat-personality {
+  font-size: 0.95rem;
+  margin-bottom: 0.5rem;
+}
+
+.cat-notes {
+  font-size: 0.9rem;
+  color: var(--color-text-muted);
+  font-style: italic;
+}
+
+/* Empty State */
+.empty-message {
+  text-align: center;
+  padding: 3rem;
+  color: var(--color-text-muted);
+  background: var(--color-surface);
+  border-radius: var(--radius);
+  border: 2px dashed var(--color-border);
+}
+
+/* Loading/Error States */
+.loading,
+.error {
+  text-align: center;
+  padding: 4rem;
+  font-size: 1.2rem;
+}
+
+.error {
+  color: var(--color-primary);
+}
+
+/* Footer */
+.app-footer {
+  text-align: center;
+  padding: 2rem;
+  border-top: 1px solid var(--color-border);
+  color: var(--color-text-muted);
+  font-size: 0.9rem;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 600px) {
+  .cat-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .app-header h1 {
+    font-size: 2rem;
+  }
+}
