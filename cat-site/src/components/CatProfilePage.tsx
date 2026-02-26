@@ -24,11 +24,12 @@ export const CatProfilePage = ({ cat, onBack }: CatProfilePageProps) => {
     ? calculateAge(cat.birthDate)
     : null;
 
-  const hasValidPhoto = cat.photoUrl && cat.photoUrl.startsWith('http');
+  const hasValidPhoto = Boolean(cat.photoUrl);
 
   // Handle contact button click
   const handleContactClick = () => {
-    window.location.href = 'mailto:contact@example.com?subject=Interest in ' + cat.name;
+    const subject = encodeURIComponent(`Interest in ${cat.name}`);
+    window.location.href = `mailto:contact@example.com?subject=${subject}`;
   };
 
   // Build alt text without undefined fields
