@@ -19,6 +19,7 @@ function App() {
 
   // Load cat data
   useEffect(() => {
+    let cancelled = false;
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), 10000);
     
@@ -30,11 +31,14 @@ function App() {
       .then(data => {
         if (!Array.isArray(data.cats)) throw new Error('Invalid data format');
         clearTimeout(timeout);
-        setCats(data.cats);
-        setLoading(false);
+        if (!cancelled) {
+          setCats(data.cats);
+          setLoading(false);
+        }
       })
       .catch(err => {
         clearTimeout(timeout);
+        if (cancelled) return;
         if (err.name === 'AbortError') {
           setError('Request timed out. Please try again.');
         } else {
@@ -44,6 +48,7 @@ function App() {
       });
     
     return () => {
+      cancelled = true;
       clearTimeout(timeout);
       controller.abort();
     };
