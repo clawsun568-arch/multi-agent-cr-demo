@@ -71,13 +71,14 @@ main {
   gap: 1.5rem;
 }
 
-/* Card Styles */
+/* Card Styles - Now Clickable */
 .cat-card {
   background: var(--color-surface);
   border-radius: var(--radius);
   box-shadow: var(--shadow);
   overflow: hidden;
   transition: transform 0.2s, box-shadow 0.2s;
+  cursor: pointer;
 }
 
 .cat-card:hover,
@@ -102,8 +103,7 @@ main {
   justify-content: center;
 }
 
-.cat-image-container.no-image::after {
-  content: '🐱';
+.image-placeholder {
   font-size: 4rem;
   opacity: 0.3;
 }
@@ -150,21 +150,24 @@ main {
   margin-bottom: 0.5rem;
 }
 
-.cat-age {
+.cat-meta {
   font-weight: 600;
   color: var(--color-primary);
   margin-bottom: 0.5rem;
 }
 
-.cat-personality {
-  font-size: 0.95rem;
-  margin-bottom: 0.5rem;
-}
-
-.cat-notes {
+.cat-personality-preview {
   font-size: 0.9rem;
   color: var(--color-text-muted);
-  font-style: italic;
+  margin-bottom: 0.75rem;
+  line-height: 1.4;
+}
+
+.view-details {
+  display: inline-block;
+  font-size: 0.85rem;
+  color: var(--color-primary);
+  font-weight: 600;
 }
 
 /* Empty State */
@@ -198,6 +201,203 @@ main {
   font-size: 0.9rem;
 }
 
+/* ===== CAT PROFILE PAGE STYLES ===== */
+
+.cat-profile {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 1rem;
+}
+
+/* Back Button */
+.back-button {
+  background: none;
+  border: none;
+  color: var(--color-primary);
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0.5rem 0;
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: color 0.2s;
+}
+
+.back-button:hover {
+  color: #e55a5a;
+}
+
+/* Hero Section */
+.cat-profile-hero {
+  margin-bottom: 2rem;
+}
+
+.hero-image-container {
+  position: relative;
+  width: 100%;
+  max-height: 500px;
+  border-radius: var(--radius);
+  overflow: hidden;
+  box-shadow: var(--shadow);
+}
+
+.hero-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* Profile Content */
+.profile-content {
+  background: var(--color-surface);
+  border-radius: var(--radius);
+  padding: 2rem;
+  box-shadow: var(--shadow);
+}
+
+.profile-header {
+  margin-bottom: 2rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 2px solid var(--color-border);
+}
+
+/* Profile-specific styles (scoped under .cat-profile to avoid collision with card) */
+.cat-profile .cat-name {
+  font-size: 2.5rem;
+  margin-bottom: 0.5rem;
+  color: var(--color-text);
+}
+
+.cat-profile .cat-breed {
+  font-size: 1.25rem;
+  color: var(--color-text-muted);
+  margin-bottom: 1rem;
+}
+
+.cat-profile .cat-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.meta-item {
+  background: var(--color-bg);
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  font-size: 0.95rem;
+}
+
+.meta-item.expected {
+  background: var(--color-planned);
+  color: #333;
+}
+
+/* Profile Sections */
+.profile-section {
+  margin-bottom: 2rem;
+}
+
+.profile-section h2 {
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+  color: var(--color-text);
+}
+
+.personality-text {
+  font-size: 1.1rem;
+  line-height: 1.7;
+  color: var(--color-text);
+}
+
+/* Photo Gallery */
+.photo-gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 1rem;
+}
+
+.gallery-item {
+  position: relative;
+  border-radius: var(--radius);
+  overflow: hidden;
+  aspect-ratio: 1;
+}
+
+.gallery-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s;
+}
+
+.gallery-item:hover img {
+  transform: scale(1.05);
+}
+
+.photo-caption {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: linear-gradient(transparent, rgba(0,0,0,0.7));
+  color: white;
+  padding: 1rem 0.5rem 0.5rem;
+  font-size: 0.85rem;
+}
+
+/* Parents Section */
+.parents-info {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.parent-card {
+  background: var(--color-bg);
+  padding: 1rem 1.5rem;
+  border-radius: var(--radius);
+  font-size: 1rem;
+}
+
+/* CTA Section */
+.cta-section {
+  background: linear-gradient(135deg, var(--color-owned), #3dbdb5);
+  color: white;
+  padding: 2rem;
+  border-radius: var(--radius);
+  text-align: center;
+}
+
+.cta-section h2 {
+  color: white;
+  margin-bottom: 0.5rem;
+}
+
+.cta-section p {
+  margin-bottom: 1.5rem;
+  opacity: 0.95;
+}
+
+.contact-button {
+  background: white;
+  color: var(--color-owned);
+  border: none;
+  padding: 0.75rem 2rem;
+  border-radius: 30px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.contact-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
 /* Responsive Adjustments */
 @media (max-width: 600px) {
   .cat-grid {
@@ -206,5 +406,17 @@ main {
   
   .app-header h1 {
     font-size: 2rem;
+  }
+  
+  .cat-profile .cat-name {
+    font-size: 2rem;
+  }
+  
+  .profile-content {
+    padding: 1rem;
+  }
+  
+  .photo-gallery {
+    grid-template-columns: repeat(2, 1fr);
   }
 }
