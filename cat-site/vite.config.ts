@@ -5,5 +5,5 @@ import react from '@vitejs/plugin-react'
 // It serves files natively during development (no bundling wait)
 export default defineConfig({
   plugins: [react()],
-  base: './',  // Makes assets work when deployed to any path
+  base: '/',  // Absolute paths — required for BrowserRouter deep links
 })
