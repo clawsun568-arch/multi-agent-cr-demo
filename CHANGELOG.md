@@ -4,13 +4,41 @@ All notable changes to the Cat Website project.
 
 ## [Unreleased]
 
-### Planned
-- Hero section with carousel
-- Navigation header
-- Cat photo upload functionality
-- Subscribe/tips section
-- Payment integration
-- Mobile responsiveness improvements
+### Planned (v2 Roadmap)
+- PR 1: React Router + NavBar + Footer + warm earthy color palette
+- PR 2: Homepage redesign with hero carousel, intro section, featured cats
+- PR 3: Our Cats page (Kings & Queens) + enhanced CatProfilePage + HeroBanner
+- PR 4: Available Kittens page with image carousels and sold/available status
+- PR 5: Gallery page with masonry grid and lightbox modal
+- PR 6: Contact page + About/Breed Info page + social media icons
+- PR 7: Real photos, responsive tuning, accessibility audit
+
+## [1.2.0] - 2026-02-26
+
+### Added — Design Doc v2
+- Rewrote `docs/cat-website-design.md` from single-page v1 to multi-page v2 architecture
+- New architecture: React Router with 7 pages (Home, About, Our Cats, Kittens, Gallery, Contact, Cat Profile)
+- New component tree with 15+ components (NavBar, Footer, HeroBanner, HeroCarousel, KittenCard, ImageCarousel, PhotoGrid, LightboxModal, SocialIcons, etc.)
+- Updated data model: added `role` (king/queen/kitten), `color`, `available` fields to Cat type
+- New `siteConfig` schema for cattery branding, contact info, and hero images
+- Color palette specification: warm earthy tones (`#A86A53` primary, cream/tan secondary)
+- Typography scale and responsive breakpoint definitions
+- 7-PR implementation roadmap with clear feature boundaries
+- Expanded future roadmap (subscriptions, pedigree display, CMS, i18n)
+
+### Added — Test Infrastructure
+- Installed Vitest + React Testing Library + jest-dom + jsdom
+- Created `vitest.config.ts` with jsdom environment and global test functions
+- Created `src/test/setup.ts` for jest-dom custom matchers
+- Added `npm test` and `npm test:watch` scripts to package.json
+- Added `vitest/globals` to TypeScript types config
+
+### Added — Unit Tests (22 tests, all passing)
+- `ageCalculator.test.ts` — 7 tests covering years, months, weeks, days, future dates, invalid input
+- `CatCard.test.tsx` — 9 tests covering rendering, click handling, accessibility, image placeholder
+- `CatSection.test.tsx` — 6 tests covering title, empty state, card count, click callback, ARIA attributes
+- All tests use fake timers for deterministic age calculations
+- Thorough comments explaining testing concepts for React newcomers
 
 ## [1.1.0] - 2026-02-26
 

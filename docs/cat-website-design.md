@@ -1,208 +1,531 @@
-# Cat Website v1 - Design Doc
+# Cat Website — Design Doc (v2)
+
+> **v2 update (Feb 2026):** Expanded from a single-page list to a multi-page cattery website
+> inspired by professional breeders like Peach Blossom Cattery. v1 design preserved in git history.
+
+---
 
 ## 1) Goal
-Build a simple website to present:
-1. **Cats we currently own**
-2. **Cats planned / expected in the future**
 
-This v1 is intentionally small and readable. Future scope (subscribe, cat-care tips, payments) is deferred.
+Build a polished cattery website that:
+1. **Showcases breeding cats** (Kings & Queens) with large photos and lineage
+2. **Lists available kittens** with personality, photos, and availability status
+3. **Presents the cattery brand** — hero imagery, breed info, and a warm visual identity
+4. **Provides contact info** — email, social media, and a call-to-action for inquiries
+
+The site remains a static frontend (no backend) with JSON-driven data for easy content updates.
 
 ---
 
 ## 2) Product scope
 
-### In scope (v1)
-- Landing page with two sections:
-  - **Our Cats** (owned cats)
-  - **Future Cats** (planned / expected)
-- Card-based display with photo, name, status, short notes
-- JSON data file for easy content updates (no rebuild needed if hosted statically)
+### In scope (v2)
+| Page | Description |
+|------|-------------|
+| **Home** | Hero image carousel, cattery intro/philosophy, featured cats |
+| **About / At a Glance** | Breed information — why choose this breed, characteristics |
+| **Our Cats** | Parent cats split into Kings (males) and Queens (females) |
+| **Cat Profile** | Detail page per cat — hero photo, personality, gallery, lineage |
+| **Available Kittens** | Grid of kittens with multi-photo carousel, personality, sold/available status |
+| **Gallery** | Full photo gallery with masonry grid and lightbox modal |
+| **Contact** | Contact info (email, social links), hero banner |
+
+### Carried over from v1
+- JSON data file for easy content updates (no rebuild needed)
+- Card-based display with photo, name, status
+- Mobile-friendly responsive layout
+- Accessibility (ARIA, keyboard navigation, semantic HTML)
 
 ### Out of scope (later)
-- User login
-- Subscription/notification features
-- Payment flows
+- User login / accounts
+- Subscription / notification features
+- Payment / adoption flows
 - CMS dashboard
+- Backend API / database
 
 ---
 
 ## 3) Functional requirements
 
-### 3.1 Show owned pets
-- Display all cats with `status = owned`
-- Show fields: `name`, `photo`, `birthDate` (computed to age), `personality`, `notes`
+### 3.1 Navigation
+- Persistent top navigation bar on all pages with logo + links
+- Links: Home, About, Our Cats, Available Kittens, Gallery, Contact
+- Mobile: hamburger menu that toggles a slide-out or dropdown nav
+- Active page highlighted in nav
 
-### 3.2 Show future/planned pets
-- Display all cats with `status = planned`
-- Show fields: `name`, `expectedDate`, `breed(optional)`, `notes`
-- age/birthDate fields are null for planned cats (display handles this)
+### 3.2 Home page
+- Full-width hero image carousel (auto-advances, manual arrows)
+- Welcome section with cattery name, tagline, and philosophy text
+- Featured cats section highlighting 2–3 cats from the data
 
-### 3.3 Basic UX
-- Mobile-friendly layout
-- Fast load and simple navigation
+### 3.3 About page
+- Hero banner with page title over a background image
+- Breed info sections (e.g. "Why Choose British Shorthair", "Why Choose British Longhair")
+- Large featured photo alongside text
+
+### 3.4 Our Cats page
+- Hero banner
+- Two sections: **Kings** (male breeders) and **Queens** (female breeders)
+- Each cat displayed with large photo, breed/color description, and name
+- Clicking a cat navigates to their profile page
+
+### 3.5 Cat Profile page (enhanced from v1)
+- Large hero photo with status badge
+- Info section: name, breed, gender, age (computed from birthDate), color
+- Personality description
+- Photo gallery (grid of additional images)
+- Parent lineage (father/mother names)
+- For planned/available cats: CTA section with contact prompt
+
+### 3.6 Available Kittens page
+- Hero banner
+- Grid of kitten cards, each with:
+  - Mini image carousel (multiple photos per kitten, prev/next controls)
+  - Name with gender, e.g. "Pomelo (Female)"
+  - Breed color description
+  - Personality paragraph
+  - Status badge: "Available" or "Sold"
+- Clicking a kitten navigates to their profile page
+
+### 3.7 Gallery page
+- Hero banner
+- Masonry-style responsive photo grid
+- Each photo has an optional breed/cat caption
+- Click-to-enlarge lightbox modal with prev/next navigation
+
+### 3.8 Contact page
+- Hero banner
+- Contact information: email, WeChat, Instagram, etc.
+- Social media icon links (Instagram, Facebook, etc.)
+- Note about preferred contact method
+
+### 3.9 Footer (all pages)
+- Cattery name and copyright
+- Quick links to main pages
+- Social media icons
 
 ---
 
-## 4) Proposed architecture
+## 4) Architecture
 
-For v1, use a simple static/frontend app with local JSON data.
+### 4.1 High-level data flow
+
+Still a static frontend app — no backend. Data lives in a JSON file fetched at runtime.
 
 ```mermaid
 flowchart TD
-    U[User Browser] --> FE[Frontend App]
+    U[User Browser] --> FE[React App]
     FE --> DATA[cat-data.json]
+    FE --> IMAGES[/images/ folder]
 
-    subgraph Website
+    subgraph "Static Website (Vite build)"
       FE
       DATA
+      IMAGES
     end
 ```
 
-### Why this architecture
-- Minimal complexity
-- Easy to iterate
-- No backend cost for first release
-- JSON file lets you add/edit cats without touching code (just edit JSON and redeploy)
-- Clear migration path to API/DB later
+### 4.2 Routing architecture (new in v2)
 
-### Why React + TypeScript
-- Component-based = easy to reuse CatCard for both sections
-- Type safety catches data model mismatches early
-- Static export (`next export` or `vite build`) gives you static files for cheap/free hosting
-- JSON lives in `/public`, fetched at runtime — editable without rebuild on some platforms (or just redeploy)
+v1 used `useState` to toggle between list and profile views. v2 uses **React Router** for
+proper multi-page navigation with URL support, back/forward, and deep linking.
+
+```mermaid
+flowchart TD
+    App["App (BrowserRouter)"]
+    App --> Layout["Layout (NavBar + Footer)"]
+
+    Layout --> Home["/ → HomePage"]
+    Layout --> About["/about → AboutPage"]
+    Layout --> OurCats["/our-cats → OurCatsPage"]
+    Layout --> Profile["/our-cats/:id → CatProfilePage"]
+    Layout --> Kittens["/kittens → AvailableKittensPage"]
+    Layout --> Gallery["/gallery → GalleryPage"]
+    Layout --> Contact["/contact → ContactPage"]
+```
+
+### 4.3 Why React Router over state-based routing
+- **Deep linking:** Users can bookmark or share `/our-cats/cat_001` directly
+- **Browser navigation:** Back/forward buttons work as expected
+- **URL reflects state:** Current page is visible in the address bar
+- **Scalability:** Adding pages doesn't require more useState logic in App
+- **SEO-friendly:** Each page has its own URL path
+
+### 4.4 Why keep React + TypeScript + Vite
+- Everything from v1 still applies (component reuse, type safety, fast builds)
+- Vite's dev server supports client-side routing out of the box
+- `vite build` produces static files — same deployment story as v1
 
 ---
 
-## 5) Data model (v1)
+## 5) Data model (v2)
+
+### 5.1 Cat entity (updated)
 
 ```mermaid
 erDiagram
     CAT {
-      string id
-      string name
-      string status
-      string photoUrl
-      date birthDate
-      string expectedDate
-      string breed
-      string personality
-      string notes
-      datetime createdAt
-      datetime updatedAt
+        string id           "Unique identifier (e.g. cat_001)"
+        string name         "Display name"
+        string breed        "Breed (e.g. Ragdoll, Scottish Fold)"
+        string gender       "Male or Female"
+        string status       "owned or planned"
+        string role         "king, queen, or kitten"
+        string color        "Coat color (e.g. Black Golden)"
+        boolean available   "For kittens: available vs sold"
+        string photoUrl     "Main/hero photo URL"
+        string birthDate    "ISO date string, null for planned"
+        string expectedDate "For planned cats, null for owned"
+        string personality  "Description text"
+        string father       "Father name"
+        string mother       "Mother name"
+        string notes        "Additional notes"
+    }
+
+    CAT ||--o{ PHOTO : "has gallery"
+
+    PHOTO {
+        string url          "Image URL"
+        string caption      "Optional caption"
     }
 ```
 
-### Notes on fields
-- `birthDate`: stored as date string (e.g., "2022-03-15"), computed to "2 years old" at display time
-- `expectedDate`: only used for planned cats (null for owned cats)
-- `birthDate`: null for planned cats (display shows "Coming soon" instead of age)
+### 5.2 New fields explained
 
-### Example records
+| Field | Type | Why added |
+|-------|------|-----------|
+| `role` | `'king' \| 'queen' \| 'kitten'` | Distinguishes breeding males, breeding females, and kittens for display on different pages. Works alongside `status` which tracks owned/planned. |
+| `color` | `string` | Coat color description (e.g. "Black Golden Longhair"). Displayed on kitten cards and profile pages. Common in cattery websites. |
+| `available` | `boolean` | For kittens only. `true` = available for adoption, `false` = sold/reserved. Drives the status badge on kitten cards. |
+
+### 5.3 Site configuration (new)
+
+A new `siteConfig` object in `cat-data.json` stores cattery-wide settings so content
+editors can update branding without touching code:
+
 ```json
 {
-  "id": "cat_001",
-  "name": "Mochi",
+  "siteConfig": {
+    "catteryName": "My Cattery",
+    "tagline": "Where cute, healthy, and friendly cats blossom",
+    "heroImages": ["/images/hero-1.jpg", "/images/hero-2.jpg"],
+    "introText": "Welcome to our cattery...",
+    "contact": {
+      "email": "contact@example.com",
+      "instagram": "@mycattery",
+      "facebook": "mycattery",
+      "wechat": "mycattery"
+    },
+    "about": {
+      "breedName": "British Shorthair",
+      "breedDescription": "Known for their chubby face...",
+      "whyChoose": ["Friendly temperament", "Great with families"]
+    }
+  },
+  "galleryImages": [
+    { "url": "/images/gallery-1.jpg", "caption": "Black Golden British Shorthair" }
+  ],
+  "cats": [ ... ]
+}
+```
+
+### 5.4 Example cat records (v2)
+
+**King (breeding male):**
+```json
+{
+  "id": "cat_003",
+  "name": "Chou Bao",
   "status": "owned",
-  "photoUrl": "/images/mochi.jpg",
-  "birthDate": "2022-03-15",
-  "expectedDate": null,
-  "breed": "Ragdoll",
-  "personality": "playful, cuddly",
-  "notes": "Loves feather toys"
+  "role": "king",
+  "breed": "British Shorthair",
+  "color": "Black Golden",
+  "gender": "Male",
+  "photoUrl": "/images/choubao.jpg",
+  "birthDate": "2021-06-10",
+  "personality": "Calm and regal, loves sunbathing by the window",
+  "gallery": [
+    { "url": "/images/choubao-2.jpg", "caption": "Relaxing on his favorite spot" }
+  ]
 }
 ```
 
+**Kitten (available):**
 ```json
 {
-  "id": "cat_002",
-  "name": "Sakura",
-  "status": "planned",
-  "photoUrl": "/images/sakura-placeholder.jpg",
-  "birthDate": null,
-  "expectedDate": "2025-06",
-  "breed": "Scottish Fold",
-  "personality": null,
-  "notes": "Expecting litter in June 2025"
+  "id": "cat_004",
+  "name": "Pomelo",
+  "status": "owned",
+  "role": "kitten",
+  "breed": "British Longhair",
+  "color": "Black Golden Longhair",
+  "gender": "Female",
+  "available": true,
+  "photoUrl": "/images/pomelo.jpg",
+  "birthDate": "2025-12-01",
+  "personality": "Very smart, loves to cuddle with other cats and explore",
+  "gallery": [
+    { "url": "/images/pomelo-2.jpg", "caption": "Playing with feather toy" },
+    { "url": "/images/pomelo-3.jpg", "caption": "Nap time" }
+  ]
 }
 ```
+
+### 5.5 Backward compatibility
+
+The v1 fields (`status`, `photoUrl`, `birthDate`, `expectedDate`, `personality`, `father`, `mother`)
+remain unchanged. New fields (`role`, `color`, `available`) are **optional** in TypeScript — existing
+v1 data continues to work. Components gracefully handle missing fields.
 
 ---
 
-## 6) Component design
+## 6) Component design (v2)
+
+### 6.1 Component tree
 
 ```mermaid
-flowchart LR
-    App[Home Page]
-    App --> Owned[Owned Cats Section]
-    App --> Planned[Future Cats Section]
-    Owned --> CatCard1[Cat Card]
-    Planned --> CatCard2[Cat Card]
+flowchart TD
+    App["App (BrowserRouter + Routes)"]
+    App --> Layout
+
+    subgraph Layout["Layout (persistent NavBar + Footer)"]
+        NavBar["NavBar (logo, links, hamburger)"]
+        Footer["Footer (copyright, quick links, social)"]
+    end
+
+    Layout --> HomePage
+    Layout --> AboutPage
+    Layout --> OurCatsPage
+    Layout --> CatProfilePage
+    Layout --> KittensPage["AvailableKittensPage"]
+    Layout --> GalleryPage
+    Layout --> ContactPage
+
+    subgraph HomePage
+        HeroCarousel["HeroCarousel (image slider)"]
+        IntroSection["IntroSection (welcome text)"]
+        FeaturedCats["FeaturedCats (2-3 highlighted cats)"]
+    end
+
+    subgraph AboutPage
+        HB1["HeroBanner"]
+        BreedInfo["BreedInfoSection"]
+    end
+
+    subgraph OurCatsPage
+        HB2["HeroBanner"]
+        KingsSection["CatSection (Kings)"]
+        QueensSection["CatSection (Queens)"]
+    end
+
+    KingsSection --> CatCard1["CatCard"]
+    QueensSection --> CatCard2["CatCard"]
+
+    subgraph KittensPage
+        HB3["HeroBanner"]
+        KittenCard["KittenCard[]"]
+    end
+
+    KittenCard --> ImageCarousel["ImageCarousel"]
+
+    subgraph GalleryPage
+        HB4["HeroBanner"]
+        PhotoGrid["PhotoGrid (masonry)"]
+    end
+
+    PhotoGrid --> LightboxModal["LightboxModal"]
+
+    subgraph ContactPage
+        HB5["HeroBanner"]
+        ContactInfo["ContactInfo"]
+        SocialIcons["SocialIcons"]
+    end
 ```
 
-### UI sections
-- **Header:** project title + short intro
-- **Owned Cats:** grid of current pets with computed ages
-- **Future Cats:** upcoming cats with expected dates
+### 6.2 Shared / reusable components
+
+| Component | Used by | Purpose |
+|-----------|---------|---------|
+| `NavBar` | Layout | Top navigation on every page |
+| `Footer` | Layout | Bottom section on every page |
+| `HeroBanner` | About, Our Cats, Kittens, Gallery, Contact | Full-width banner with title overlay |
+| `CatCard` | Our Cats, Featured Cats | Clickable card showing cat summary |
+| `CatSection` | Our Cats, Home | Groups cards under a heading |
+| `ImageCarousel` | Kitten Card, Hero | Prev/next image slider |
+| `SocialIcons` | Contact, Footer | Instagram/Facebook/etc icon links |
+
+### 6.3 Component responsibility notes
+
+- **Layout** wraps every page with NavBar at top and Footer at bottom using React Router's `<Outlet>`
+- **HeroBanner** is a simple component: takes a `title` string and optional `backgroundImage` URL, renders a full-width div with dark overlay and centered white text
+- **ImageCarousel** manages its own `currentIndex` state and renders prev/next arrow buttons. Used at two scales: full-width on HomePage hero, and thumbnail-size inside KittenCard
+- **LightboxModal** uses a React portal to render over everything. Receives an array of image URLs + current index. Handles keyboard (Escape to close, arrow keys to navigate)
 
 ---
 
-## 7) File layout proposal
+## 7) File layout (v2)
 
 ```text
 cat-site/
-  package.json          # React + TypeScript deps, build scripts
-  tsconfig.json         # TypeScript config
-  vite.config.ts        # Build tool (Vite recommended for simplicity)
+  package.json              # React + TypeScript + Vite + react-router-dom
+  tsconfig.json             # TypeScript config
+  vite.config.ts            # Vite build config
+  vitest.config.ts          # Test runner config (Vitest)
   public/
-    cat-data.json       # Editable data file (lives here for easy updates)
-    images/
-      mochi.jpg
-      sakura-placeholder.jpg
+    cat-data.json           # All cat data + site config (edit to update content)
+    images/                 # Cat photos, hero images, gallery images
   src/
     components/
-      CatCard.tsx       # Reusable card component
-      CatSection.tsx    # Section wrapper with title
+      NavBar.tsx            # Top navigation bar with logo and links
+      NavBar.test.tsx       # Tests for NavBar
+      Footer.tsx            # Footer with links and social icons
+      Layout.tsx            # Wraps pages with NavBar + Footer
+      HeroBanner.tsx        # Reusable full-width page banner
+      HeroCarousel.tsx      # Image carousel for homepage hero
+      CatCard.tsx           # Clickable cat summary card (existing, enhanced)
+      CatCard.test.tsx      # Tests for CatCard
+      CatSection.tsx        # Groups cat cards under a heading (existing)
+      CatSection.test.tsx   # Tests for CatSection
+      CatProfilePage.tsx    # Detail view for individual cat (existing, enhanced)
+      KittenCard.tsx        # Card with image carousel + personality + status
+      ImageCarousel.tsx     # Reusable prev/next image slider
+      PhotoGrid.tsx         # Masonry-style image grid
+      LightboxModal.tsx     # Full-screen image viewer overlay
+      SocialIcons.tsx       # Social media icon links
+      IntroSection.tsx      # Welcome/philosophy text block
+      FeaturedCats.tsx      # Highlighted cats on homepage
     data/
-      types.ts          # TypeScript interfaces for Cat
+      types.ts              # TypeScript interfaces (Cat, Photo, SiteConfig, etc.)
     pages/
-      Home.tsx          # Main page with Owned + Planned sections
+      HomePage.tsx          # Landing page with hero + intro + featured
+      AboutPage.tsx         # Breed info page
+      OurCatsPage.tsx       # Kings & Queens listing
+      AvailableKittensPage.tsx  # Available/sold kittens grid
+      GalleryPage.tsx       # Photo gallery with lightbox
+      ContactPage.tsx       # Contact info and social links
     utils/
-      ageCalculator.ts  # Compute age from birthDate
+      ageCalculator.ts      # Compute age from birthDate (existing)
+      ageCalculator.test.ts # Tests for age calculator
+    test/
+      setup.ts              # Test setup (jsdom, testing-library matchers)
+    App.tsx                 # Root component — BrowserRouter + Routes
+    App.css                 # All styles (CSS variables, responsive grid)
+    main.tsx                # Entry point with ErrorBoundary
+    index.css               # Global reset styles
 ```
 
 ---
 
-## 8) Non-functional requirements
+## 8) Visual design
+
+### 8.1 Color palette
+
+Warm, earthy tones inspired by professional cattery websites. Conveys warmth and trustworthiness.
+
+| Token | Value | Usage |
+|-------|-------|-------|
+| `--color-primary` | `#A86A53` | Headings, accent links, nav hover, buttons |
+| `--color-primary-hover` | `#8B5742` | Hover state for primary |
+| `--color-secondary` | `#D4A574` | Secondary accents, tags, subtle highlights |
+| `--color-bg` | `#FDFBF9` | Page background (warm off-white) |
+| `--color-surface` | `#FFFFFF` | Cards, modals, content areas |
+| `--color-text` | `#333333` | Body text |
+| `--color-text-muted` | `#666666` | Secondary text, captions |
+| `--color-border` | `#E8DDD4` | Card borders, dividers (warm gray) |
+| `--color-available` | `#4ECDC4` | "Available" status badge |
+| `--color-sold` | `#E0E0E0` | "Sold" status badge |
+| `--shadow` | `0 2px 8px rgba(0,0,0,0.08)` | Card elevation |
+
+### 8.2 Typography
+
+| Element | Font | Size | Weight |
+|---------|------|------|--------|
+| Body | System sans-serif stack | 16px base | 400 |
+| h1 (page titles) | Same | 2.5rem | 300 (light, elegant) |
+| h2 (section heads) | Same | 1.75rem | 400 |
+| h3 (card names) | Same | 1.25rem | 600 |
+| Captions / meta | Same | 0.875rem | 400 |
+| Nav links | Same | 0.95rem | 500 |
+
+Using light (300) weight for large headings gives an elegant, cattery-appropriate feel
+similar to the reference site.
+
+### 8.3 Responsive breakpoints
+
+| Breakpoint | Screen | Columns | Notes |
+|------------|--------|---------|-------|
+| < 640px | Mobile | 1 | Hamburger nav, stacked layout |
+| 640–1024px | Tablet | 2 | Side-by-side cards |
+| > 1024px | Desktop | 3 | Full grid, max-width 1200px container |
+
+---
+
+## 9) Non-functional requirements
 
 ### Performance
-- Keep Time-to-Interactive low (static assets, lazy-load images)
-- JSON file < 100KB for fast fetch
+- Lazy-load images with `loading="lazy"` (except hero/above-fold)
+- JSON data file < 100KB
+- Use Vite's built-in code splitting for route-based lazy loading (future optimization)
+- Optimize images before adding to `/public/images/`
 
-### Accessibility (specifics)
-- Alt text on all cat photos describing the cat
-- Semantic heading hierarchy (h1 for site title, h2 for section headers)
-- Keyboard navigable cards (tabindex, Enter to open detail view)
-- Color contrast > 4.5:1 for text
+### Accessibility
+- Alt text on all photos describing the specific cat
+- Semantic heading hierarchy (h1 per page, h2 for sections)
+- Keyboard-navigable: all interactive elements focusable, Escape closes modals
+- Color contrast > 4.5:1 for text on all backgrounds
+- ARIA labels on icon-only buttons (hamburger, carousel arrows, lightbox controls)
+- Focus trap inside lightbox modal when open
+
+### Testing
+- Unit tests with Vitest + React Testing Library
+- Every component and utility has test coverage
+- Tests run in CI before merge (`npm test`)
+- Build check (`npm run build`) required before merge
 
 ### Content updates
-- Edit `public/cat-data.json` to add/remove/update cats
-- Redeploy (most static hosts auto-deploy on git push)
+- Edit `public/cat-data.json` to add/remove/update cats, kittens, gallery images
+- Add photos to `public/images/`
+- Redeploy (static hosts auto-deploy on git push)
 
 ---
 
-## 9) Future roadmap
+## 10) Implementation roadmap
 
-1. **Subscribe module** (email or Telegram updates for future kittens)
-2. **Cat raising tips** section (articles/checklists)
-3. **Payments** (donation/adoption-related flows)
-4. Move from local JSON to backend API + database when content grows
+| PR | Title | What ships |
+|----|-------|------------|
+| **0** | Design Doc v2 + Test Infrastructure | This document. Vitest setup. Tests for existing code. |
+| **1** | Foundation: Router + Layout + Colors | React Router, NavBar, Footer, Layout wrapper, warm color palette |
+| **2** | Homepage Redesign | HeroCarousel, IntroSection, FeaturedCats, HomePage |
+| **3** | Our Cats + Enhanced Profile | OurCatsPage (Kings/Queens), HeroBanner, enhanced CatProfilePage, data model updates |
+| **4** | Available Kittens | AvailableKittensPage, KittenCard, ImageCarousel |
+| **5** | Gallery + Lightbox | GalleryPage, PhotoGrid, LightboxModal |
+| **6** | Contact + About Pages | ContactPage, AboutPage, SocialIcons |
+| **7** | Polish | Real photos, responsive tuning, accessibility audit, performance |
+
+Each PR includes unit tests, comments, and CHANGELOG updates.
 
 ---
 
-## 10) Review checklist
+## 11) Future roadmap
 
-- [ ] Requirements capture owned vs future cats clearly
-- [ ] Diagram is understandable for non-web specialists
-- [ ] Data model handles both owned and planned cats without ambiguity
-- [ ] Data fields are sufficient for v1
-- [ ] Scope boundaries are explicit
+1. **Subscribe module** — email or Telegram notifications when new kittens are available
+2. **Cat-care tips** — articles/checklists section for new cat owners
+3. **Pedigree display** — visual family tree showing lineage across generations
+4. **Payments / reservations** — deposit flow for reserving kittens
+5. **Backend migration** — move from JSON file to API + database when content grows
+6. **CMS dashboard** — admin interface for content editors (non-technical users)
+7. **Blog** — cattery news, show results, kitten updates
+8. **Internationalization** — multi-language support (English + Chinese)
+
+---
+
+## 12) Review checklist
+
+- [ ] All pages from section 2 are accounted for in the component tree
+- [ ] Data model handles kings, queens, and kittens without ambiguity
+- [ ] Color palette tokens map to specific UI elements
+- [ ] Mermaid diagrams render correctly and are understandable
+- [ ] File layout matches the component tree
+- [ ] Implementation roadmap has clear PR boundaries
+- [ ] Backward compatibility with v1 data is preserved
+- [ ] Accessibility requirements are specific and testable
