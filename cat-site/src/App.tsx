@@ -7,6 +7,7 @@ import { CatProfilePage } from './components/CatProfilePage';
 import { AvailableKittensPage } from './pages/AvailableKittensPage';
 import { GalleryPage } from './pages/GalleryPage';
 import { ContactPage } from './pages/ContactPage';
+import { NotFoundPage } from './pages/NotFoundPage';
 import './App.css';
 
 /**
@@ -57,6 +58,9 @@ function App() {
           <Route path="/kittens" element={<AvailableKittensPage />} />
           <Route path="/gallery" element={<GalleryPage />} />
           <Route path="/contact" element={<ContactPage />} />
+          {/* Catch-all route — shows 404 page for any unmatched URL.
+              path="*" means "match anything not matched above." */}
+          <Route path="*" element={<NotFoundPage />} />
         </Route>
       </Routes>
     </BrowserRouter>

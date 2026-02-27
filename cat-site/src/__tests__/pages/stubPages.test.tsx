@@ -22,6 +22,7 @@ import { OurCatsPage } from '../../pages/OurCatsPage';
 import { AvailableKittensPage } from '../../pages/AvailableKittensPage';
 import { GalleryPage } from '../../pages/GalleryPage';
 import { ContactPage } from '../../pages/ContactPage';
+import { NotFoundPage } from '../../pages/NotFoundPage';
 
 describe('Stub Pages', () => {
   it('AboutPage renders heading "About Us"', () => {
@@ -77,5 +78,19 @@ describe('Stub Pages', () => {
     expect(
       screen.getByRole('heading', { name: 'Contact Us' })
     ).toBeInTheDocument();
+  });
+
+  it('NotFoundPage renders heading "Page Not Found" with link to home', () => {
+    render(
+      <MemoryRouter>
+        <NotFoundPage />
+      </MemoryRouter>
+    );
+    expect(
+      screen.getByRole('heading', { name: 'Page Not Found' })
+    ).toBeInTheDocument();
+    // Should have a link back to home
+    const homeLink = screen.getByText(/Back to Home/).closest('a');
+    expect(homeLink).toHaveAttribute('href', '/');
   });
 });
