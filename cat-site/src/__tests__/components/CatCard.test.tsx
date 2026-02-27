@@ -22,8 +22,8 @@
  */
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
-import { CatCard } from './CatCard';
-import type { Cat } from '../data/types';
+import { CatCard } from '../../components/CatCard';
+import type { Cat } from '../../data/types';
 
 // A helper function that creates a fake cat object for testing.
 // You can override any field by passing partial data.

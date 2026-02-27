@@ -15,8 +15,8 @@
  */
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
-import { CatSection } from './CatSection';
-import type { Cat } from '../data/types';
+import { CatSection } from '../../components/CatSection';
+import type { Cat } from '../../data/types';
 
 // Helper to create test cat data
 function makeCat(id: string, name: string): Cat {

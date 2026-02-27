@@ -441,15 +441,15 @@ This project uses a **component-based architecture** organized by **role/respons
 > **Should test files be separate from the code they test?**
 >
 > There are two common conventions:
-> - **Co-located** (our choice): `CatCard.tsx` and `CatCard.test.tsx` sit in the same folder.
->   This makes it easy to see at a glance whether a component has tests. When you open the
->   `components/` folder, you see each component paired with its test file.
-> - **Separate `__tests__/` folder**: All tests in a dedicated directory. This keeps the
->   source folder "clean" but makes it harder to notice missing tests.
+> - **Co-located**: `CatCard.tsx` and `CatCard.test.tsx` sit in the same folder.
+>   Used by MUI (Material UI), Ant Design, TanStack Query, and React itself.
+> - **Separate `__tests__/` folder** (our choice): All tests in a dedicated directory tree
+>   that mirrors the source structure. Used by Next.js, Redux, and many enterprise projects.
+>   This keeps source folders clean and makes it clear where to find/add tests.
 >
-> We use co-located tests because the React community (and tools like Vitest/Jest) favor it,
-> and it keeps related files together. The one exception is `test/setup.ts` which is
-> infrastructure, not a test for a specific file.
+> We use the separate `__tests__/` approach. The test directory mirrors the source
+> structure: `__tests__/components/` for component tests, `__tests__/utils/` for
+> utility tests. Test infrastructure (setup files) lives in `test/`.
 
 ### 7.3 Directory tree
 
@@ -465,15 +465,12 @@ cat-site/
   src/                      # --- SOURCE CODE ---
     components/             # --- REUSABLE UI BUILDING BLOCKS ---
       NavBar.tsx            # Top navigation bar with logo and links
-      NavBar.test.tsx       # Tests for NavBar
       Footer.tsx            # Footer with links and social icons
       Layout.tsx            # Wraps pages with NavBar + Footer
       HeroBanner.tsx        # Reusable full-width page banner (see "banner" in section 6.3)
       HeroCarousel.tsx      # Image carousel for homepage hero (see "hero" in section 6.3)
       CatCard.tsx           # Clickable cat summary card (existing, enhanced)
-      CatCard.test.tsx      # Tests for CatCard
       CatSection.tsx        # Groups cat cards under a heading (existing)
-      CatSection.test.tsx   # Tests for CatSection
       CatProfilePage.tsx    # Detail view for individual cat (existing, enhanced)
       KittenCard.tsx        # Card with image carousel + personality + status
       ImageCarousel.tsx     # Reusable prev/next image slider
@@ -493,7 +490,13 @@ cat-site/
       ContactPage.tsx       # /contact → Contact info and social links
     utils/                  # --- HELPER FUNCTIONS (pure logic, no UI) ---
       ageCalculator.ts      # Compute age from birthDate (existing)
-      ageCalculator.test.ts # Tests for age calculator (co-located)
+    __tests__/              # --- UNIT TESTS (mirrors src/ structure) ---
+      components/
+        CatCard.test.tsx    # Tests for CatCard
+        CatSection.test.tsx # Tests for CatSection
+        NavBar.test.tsx     # Tests for NavBar (future)
+      utils/
+        ageCalculator.test.ts # Tests for age calculator
     test/                   # --- TEST INFRASTRUCTURE ---
       setup.ts              # Test setup (jsdom, testing-library matchers)
     App.tsx                 # Root component — BrowserRouter + Routes

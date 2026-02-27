@@ -13,7 +13,7 @@
  * fail once the cat's birthday passes and they turn 3.
  */
 import { describe, it, expect, vi, afterEach } from 'vitest';
-import { calculateAge } from './ageCalculator';
+import { calculateAge } from '../../utils/ageCalculator';
 
 describe('calculateAge', () => {
   afterEach(() => {
