@@ -7,7 +7,7 @@
  * We test:
  * - Returns loading=true initially, then cats after fetch resolves
  * - Returns error message when fetch fails
- * - Returns error on timeout (via AbortController)
+ * - Returns error when data format is invalid
  *
  * KEY TESTING PATTERN: renderHook
  * Hooks can't be called outside of React components. The renderHook()

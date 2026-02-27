@@ -15,7 +15,7 @@ All notable changes to the Cat Website project.
 ## [1.3.0] - 2026-02-26
 
 ### Added — React Router + Layout (PR 1)
-- Installed `react-router-dom` v6 for client-side routing
+- Installed `react-router-dom` v7 for client-side routing (uses v6-compatible API)
 - **NavBar** component with logo, 6 navigation links, active page highlighting, and mobile hamburger menu
 - **Footer** component with quick links, social media placeholder, and copyright notice
 - **Layout** component wrapping all pages with NavBar + `<Outlet />` + Footer (sticky footer pattern)

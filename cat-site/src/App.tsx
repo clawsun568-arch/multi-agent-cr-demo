@@ -17,7 +17,7 @@ import './App.css';
  * state-based routing (selectedCatId useState), filtering, and rendering.
  * Now all that logic lives in individual pages and the useCatData hook.
  *
- * REACT ROUTER v6 KEY CONCEPTS:
+ * REACT ROUTER KEY CONCEPTS (v7, backwards-compatible with v6 API):
  *
  * <BrowserRouter>
  *   Provides routing context to the entire app. It uses the browser's
