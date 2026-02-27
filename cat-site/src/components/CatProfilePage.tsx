@@ -1,51 +1,93 @@
 import { useState } from 'react';
-import { Cat } from '../data/types';
+import { useParams, Link } from 'react-router-dom';
+import { useCatData } from '../hooks/useCatData';
 import { calculateAge } from '../utils/ageCalculator';
 
-interface CatProfilePageProps {
-  cat: Cat;
-  onBack: () => void;
-}
-
 /**
- * CatProfilePage - Detailed view for individual cat
- * Shows full information about a cat including:
- * - Large hero photo
+ * CatProfilePage — Detailed view for an individual cat.
+ *
+ * This component is rendered at the route /our-cats/:id.
+ *
+ * HOW IT GETS THE CAT DATA:
+ * 1. useParams() reads the ":id" part from the URL.
+ *    For example, if the URL is "/our-cats/cat_001", then id = "cat_001".
+ * 2. useCatData() fetches the full list of cats from cat-data.json.
+ * 3. We find the matching cat with cats.find(c => c.id === id).
+ * 4. If no cat matches, we show a "not found" message.
+ *
+ * PREVIOUS DESIGN (before React Router):
+ * This component used to receive `cat` and `onBack` as props from App.tsx.
+ * Now it manages its own data fetching and uses a <Link> for navigation
+ * instead of an onBack callback.
+ *
+ * Shows:
+ * - Large hero photo with status badge
  * - Basic info (name, breed, gender, age)
  * - Personality description
- * - Photo gallery
- * - Status (owned/planned)
+ * - Photo gallery (if available)
  * - Parent lineage (if applicable)
+ * - Contact CTA for planned cats
  */
-export const CatProfilePage = ({ cat, onBack }: CatProfilePageProps) => {
-  const isOwned = cat.status === 'owned';
-  const [imageError, setImageError] = useState(false);
-  const age = isOwned && cat.birthDate
-    ? calculateAge(cat.birthDate)
-    : null;
+export function CatProfilePage() {
+  // Read the cat ID from the URL parameter (e.g., "/our-cats/cat_001" → id = "cat_001")
+  const { id } = useParams<{ id: string }>();
 
+  // Fetch all cat data
+  const { cats, loading, error } = useCatData();
+
+  // Track whether the hero image failed to load (shows placeholder instead)
+  const [imageError, setImageError] = useState(false);
+
+  // Show loading state while data is being fetched
+  if (loading) {
+    return <div className="loading">Loading...</div>;
+  }
+
+  // Show error state if the fetch failed
+  if (error) {
+    return <div className="error">Error: {error}</div>;
+  }
+
+  // Find the cat that matches the URL parameter
+  const cat = cats.find(c => c.id === id);
+
+  // If no cat matches the ID, show a friendly "not found" page
+  if (!cat) {
+    return (
+      <div className="stub-page">
+        <h1>Cat Not Found</h1>
+        <p>Sorry, we couldn't find a cat with that ID.</p>
+        <Link to="/" className="back-button">
+          &larr; Back to Home
+        </Link>
+      </div>
+    );
+  }
+
+  const isOwned = cat.status === 'owned';
+  const age = isOwned && cat.birthDate ? calculateAge(cat.birthDate) : null;
   const hasValidPhoto = Boolean(cat.photoUrl);
 
-  // Handle contact button click
+  // Handle contact button click — opens the user's email client
   const handleContactClick = () => {
     const subject = encodeURIComponent(`Interest in ${cat.name}`);
     window.location.href = `mailto:contact@example.com?subject=${subject}`;
   };
 
-  // Build alt text without undefined fields
+  // Build descriptive alt text for the hero image
   const altParts = [cat.name, cat.breed, cat.gender].filter(Boolean);
 
   return (
     <article className="cat-profile">
-      {/* Back button */}
-      <button
-        onClick={onBack}
+      {/* Back button — uses <Link> to navigate back via React Router
+          instead of the old onBack callback */}
+      <Link
+        to="/"
         className="back-button"
         aria-label="Go back to cat list"
-        type="button"
       >
-        ← Back to Cats
-      </button>
+        &larr; Back to Cats
+      </Link>
 
       {/* Hero Section with large photo */}
       <header className="cat-profile-hero">
@@ -148,12 +190,11 @@ export const CatProfilePage = ({ cat, onBack }: CatProfilePageProps) => {
           <section className="profile-section cta-section">
             <h2>Interested in {cat.name}?</h2>
             <p>
-              {cat.expectedDate 
+              {cat.expectedDate
                 ? `This kitten is expected to arrive around ${cat.expectedDate}.`
-                : 'This kitten is coming soon. Contact us for updates.'
-              }
+                : 'This kitten is coming soon. Contact us for updates.'}
             </p>
-            <button 
+            <button
               className="contact-button"
               onClick={handleContactClick}
               type="button"
@@ -165,4 +206,4 @@ export const CatProfilePage = ({ cat, onBack }: CatProfilePageProps) => {
       </div>
     </article>
   );
-};
+}

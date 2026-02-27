@@ -5,13 +5,51 @@ All notable changes to the Cat Website project.
 ## [Unreleased]
 
 ### Planned (v2 Roadmap)
-- PR 1: React Router + NavBar + Footer + warm earthy color palette
 - PR 2: Homepage redesign with hero carousel, intro section, featured cats
 - PR 3: Our Cats page (Kings & Queens) + enhanced CatProfilePage + HeroBanner
 - PR 4: Available Kittens page with image carousels and sold/available status
 - PR 5: Gallery page with masonry grid and lightbox modal
 - PR 6: Contact page + About/Breed Info page + social media icons
 - PR 7: Real photos, responsive tuning, accessibility audit
+
+## [1.3.0] - 2026-02-26
+
+### Added — React Router + Layout (PR 1)
+- Installed `react-router-dom` v6 for client-side routing
+- **NavBar** component with logo, 6 navigation links, active page highlighting, and mobile hamburger menu
+- **Footer** component with quick links, social media placeholder, and copyright notice
+- **Layout** component wrapping all pages with NavBar + `<Outlet />` + Footer (sticky footer pattern)
+- **useCatData** custom hook — extracted data fetching logic from App.tsx into a reusable hook
+- **HomePage** replicating the original list view (Our Cats + Future Cats sections)
+- Stub pages: AboutPage, OurCatsPage, AvailableKittensPage, GalleryPage, ContactPage
+- Routes: `/`, `/about`, `/our-cats`, `/our-cats/:id`, `/kittens`, `/gallery`, `/contact`
+- New directories: `src/hooks/`, `src/pages/`
+
+### Added — Unit Tests (31 new tests, 53 total, all passing)
+- `NavBar.test.tsx` — 9 tests: logo, links, active highlighting, hamburger toggle, accessibility
+- `Footer.test.tsx` — 6 tests: copyright year, quick links, hrefs, ARIA roles
+- `Layout.test.tsx` — 3 tests: NavBar + Footer + Outlet rendering, correct child route
+- `HomePage.test.tsx` — 4 tests: loading state, cat sections render, error handling, header
+- `stubPages.test.tsx` — 5 tests: each stub page renders its heading
+- `useCatData.test.ts` — 4 tests: loading state, successful fetch, error handling, invalid data
+
+### Changed
+- **App.tsx** completely rewritten — from 120-line state-driven router to clean React Router configuration
+- **CatProfilePage** refactored from prop-driven (`cat` + `onBack`) to self-contained route component using `useParams()` + `useCatData()`
+- Color palette updated to warm earthy tones:
+  - Primary: `#ff6b6b` (bright red) → `#A86A53` (warm brown)
+  - Background: `#fafafa` → `#FDFBF9` (warm off-white)
+  - Border: `#e0e0e0` → `#E8DDD4` (warm gray)
+  - Added `--color-primary-hover: #8B5742` and `--color-secondary: #D4A574`
+- CTA section gradient updated from teal to warm brown/tan
+- Back button hover color updated from hardcoded `#e55a5a` to `var(--color-primary-hover)`
+- Profile page h1 font-weight changed to 300 for elegant appearance
+- Page title changed from "My Cats" to "My Cattery"
+
+### Removed
+- State-based routing (`selectedCatId` useState) from App.tsx
+- Direct `cat` and `onBack` props from CatProfilePage (now uses useParams + useCatData)
+- Inline header (`<h1>My Cats</h1>`) and footer from App.tsx (replaced by NavBar and Footer components)
 
 ## [1.2.0] - 2026-02-26
 

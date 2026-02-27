@@ -6,16 +6,21 @@
 }
 
 :root {
-  /* CSS Variables for consistent theming */
-  --color-bg: #fafafa;
-  --color-surface: #ffffff;
-  --color-text: #333333;
-  --color-text-muted: #666666;
-  --color-border: #e0e0e0;
-  --color-primary: #ff6b6b;
-  --color-owned: #4ecdc4;
-  --color-planned: #ffe66d;
-  --shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  /* ===== COLOR PALETTE =====
+     Warm, earthy tones inspired by cattery branding.
+     Primary brown is used for headings, buttons, and navigation accents.
+     Background is a warm off-white instead of the cold gray from v1. */
+  --color-primary: #A86A53;         /* warm brown — headings, links, buttons */
+  --color-primary-hover: #8B5742;   /* darker brown — hover states */
+  --color-secondary: #D4A574;       /* warm tan — secondary accents, tags */
+  --color-bg: #FDFBF9;             /* warm off-white — page background */
+  --color-surface: #FFFFFF;         /* white — cards, content areas */
+  --color-text: #333333;            /* dark gray — body text */
+  --color-text-muted: #666666;      /* medium gray — secondary text, captions */
+  --color-border: #E8DDD4;          /* warm gray — borders, dividers */
+  --color-owned: #4ecdc4;           /* teal — "Owned" status badge */
+  --color-planned: #ffe66d;         /* yellow — "Planned" status badge */
+  --shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
   --radius: 12px;
   --max-width: 1200px;
 }
@@ -27,17 +32,155 @@ body {
   line-height: 1.6;
 }
 
-/* Header Styles */
-.app-header {
-  text-align: center;
-  padding: 2rem 1rem;
-  background: var(--color-surface);
-  border-bottom: 1px solid var(--color-border);
+/* ===== LAYOUT =====
+   The Layout component uses flexbox to create a sticky footer pattern.
+   Even when page content is short, the footer stays at the bottom. */
+.layout {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
 }
 
-.app-header h1 {
+.layout-main {
+  flex: 1;
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 2rem 1rem;
+  width: 100%;
+}
+
+/* ===== NAVBAR =====
+   Sticky navigation bar at the top of every page.
+   On mobile, links collapse into a hamburger menu. */
+.navbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 1.5rem;
+  background: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.navbar-logo {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--color-primary);
+  text-decoration: none;
+}
+
+.navbar-logo:hover {
+  color: var(--color-primary-hover);
+}
+
+.navbar-links {
+  display: flex;
+  list-style: none;
+  gap: 0.25rem;
+}
+
+.navbar-link {
+  display: block;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: var(--color-text);
+  text-decoration: none;
+  border-radius: 6px;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.navbar-link:hover {
+  background-color: var(--color-bg);
+  color: var(--color-primary);
+}
+
+.navbar-link--active {
+  color: var(--color-primary);
+  font-weight: 600;
+}
+
+/* Hamburger button — hidden on desktop, visible on mobile */
+.navbar-hamburger {
+  display: none;
+  flex-direction: column;
+  gap: 4px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.5rem;
+}
+
+.hamburger-line {
+  display: block;
+  width: 24px;
+  height: 2px;
+  background: var(--color-text);
+  border-radius: 2px;
+  transition: transform 0.2s;
+}
+
+/* ===== SITE FOOTER ===== */
+.site-footer {
+  text-align: center;
+  padding: 2rem 1rem;
+  border-top: 1px solid var(--color-border);
+  background: var(--color-surface);
+  margin-top: auto;
+}
+
+.footer-links ul {
+  list-style: none;
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.footer-link {
+  color: var(--color-text-muted);
+  text-decoration: none;
+  font-size: 0.9rem;
+  transition: color 0.2s;
+}
+
+.footer-link:hover {
+  color: var(--color-primary);
+}
+
+.footer-social {
+  margin-bottom: 1rem;
+  color: var(--color-text-muted);
+  font-size: 0.9rem;
+}
+
+.footer-copyright {
+  color: var(--color-text-muted);
+  font-size: 0.85rem;
+  margin-bottom: 0.25rem;
+}
+
+.footer-built-with {
+  color: var(--color-text-muted);
+  font-size: 0.8rem;
+}
+
+/* ===== PAGE HEADER =====
+   Used on the homepage for the welcome section. */
+.page-header {
+  text-align: center;
+  padding: 2rem 1rem;
+  margin-bottom: 2rem;
+}
+
+.page-header h1 {
   font-size: 2.5rem;
+  font-weight: 300;
   margin-bottom: 0.5rem;
+  color: var(--color-text);
 }
 
 .tagline {
@@ -45,14 +188,26 @@ body {
   font-size: 1.1rem;
 }
 
-/* Main Content */
-main {
-  max-width: var(--max-width);
-  margin: 0 auto;
-  padding: 2rem 1rem;
+/* ===== STUB PAGES =====
+   Placeholder styling for pages not yet implemented. */
+.stub-page {
+  text-align: center;
+  padding: 4rem 1rem;
 }
 
-/* Section Styles */
+.stub-page h1 {
+  font-size: 2.5rem;
+  font-weight: 300;
+  margin-bottom: 1rem;
+  color: var(--color-text);
+}
+
+.stub-page p {
+  font-size: 1.1rem;
+  color: var(--color-text-muted);
+}
+
+/* ===== SECTION STYLES ===== */
 .cat-section {
   margin-bottom: 3rem;
 }
@@ -64,14 +219,16 @@ main {
   border-bottom: 2px solid var(--color-border);
 }
 
-/* Grid Layout - Responsive */
+/* ===== GRID LAYOUT =====
+   Responsive card grid. On desktop, cards fill columns of 300px min width.
+   On mobile (< 600px), it collapses to a single column. */
 .cat-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   gap: 1.5rem;
 }
 
-/* Card Styles - Now Clickable */
+/* ===== CAT CARD STYLES ===== */
 .cat-card {
   background: var(--color-surface);
   border-radius: var(--radius);
@@ -170,7 +327,7 @@ main {
   font-weight: 600;
 }
 
-/* Empty State */
+/* ===== EMPTY STATE ===== */
 .empty-message {
   text-align: center;
   padding: 3rem;
@@ -180,7 +337,7 @@ main {
   border: 2px dashed var(--color-border);
 }
 
-/* Loading/Error States */
+/* ===== LOADING / ERROR STATES ===== */
 .loading,
 .error {
   text-align: center;
@@ -192,15 +349,6 @@ main {
   color: var(--color-primary);
 }
 
-/* Footer */
-.app-footer {
-  text-align: center;
-  padding: 2rem;
-  border-top: 1px solid var(--color-border);
-  color: var(--color-text-muted);
-  font-size: 0.9rem;
-}
-
 /* ===== CAT PROFILE PAGE STYLES ===== */
 
 .cat-profile {
@@ -209,24 +357,25 @@ main {
   padding: 1rem;
 }
 
-/* Back Button */
+/* Back Button — now a <Link> instead of a <button> */
 .back-button {
-  background: none;
-  border: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
   color: var(--color-primary);
   font-size: 1rem;
   font-weight: 600;
-  cursor: pointer;
+  text-decoration: none;
   padding: 0.5rem 0;
   margin-bottom: 1rem;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
   transition: color 0.2s;
+  background: none;
+  border: none;
+  cursor: pointer;
 }
 
 .back-button:hover {
-  color: #e55a5a;
+  color: var(--color-primary-hover);
 }
 
 /* Hero Section */
@@ -280,6 +429,7 @@ main {
 /* Profile-specific styles (scoped under .cat-profile to avoid collision with card) */
 .cat-profile .cat-name {
   font-size: 2.5rem;
+  font-weight: 300;
   margin-bottom: 0.5rem;
   color: var(--color-text);
 }
@@ -377,7 +527,7 @@ main {
 
 /* CTA Section */
 .cta-section {
-  background: linear-gradient(135deg, var(--color-owned), #3dbdb5);
+  background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
   color: white;
   padding: 2rem;
   border-radius: var(--radius);
@@ -396,7 +546,7 @@ main {
 
 .contact-button {
   background: white;
-  color: var(--color-owned);
+  color: var(--color-primary);
   border: none;
   padding: 0.75rem 2rem;
   border-radius: 30px;
@@ -411,24 +561,53 @@ main {
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
-/* Responsive Adjustments */
+/* ===== RESPONSIVE ADJUSTMENTS ===== */
+
+/* Mobile: hamburger menu, single-column grid */
+@media (max-width: 640px) {
+  .navbar-hamburger {
+    display: flex;
+  }
+
+  .navbar-links {
+    display: none;
+    flex-direction: column;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: var(--color-surface);
+    border-bottom: 1px solid var(--color-border);
+    padding: 0.5rem 0;
+    box-shadow: var(--shadow);
+  }
+
+  .navbar-links--open {
+    display: flex;
+  }
+
+  .navbar-link {
+    padding: 0.75rem 1.5rem;
+  }
+}
+
 @media (max-width: 600px) {
   .cat-grid {
     grid-template-columns: 1fr;
   }
-  
-  .app-header h1 {
+
+  .page-header h1 {
     font-size: 2rem;
   }
-  
+
   .cat-profile .cat-name {
     font-size: 2rem;
   }
-  
+
   .profile-content {
     padding: 1rem;
   }
-  
+
   .photo-gallery {
     grid-template-columns: repeat(2, 1fr);
   }
