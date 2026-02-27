@@ -51,12 +51,14 @@ export function NavBar() {
    * every URL starts with "/", and we don't want the Home link
    * highlighted on every page.
    *
-   * For other links: we use startsWith() so that "/our-cats/cat_001"
-   * still highlights the "Our Cats" link.
+   * For other links: we check if the URL matches exactly OR starts
+   * with the path followed by "/". This way "/our-cats/cat_001"
+   * highlights "Our Cats", but a hypothetical "/our-cats-special"
+   * would NOT (because the character after "/our-cats" isn't "/").
    */
   function isActive(path: string): boolean {
     if (path === '/') return location.pathname === '/';
-    return location.pathname.startsWith(path);
+    return location.pathname === path || location.pathname.startsWith(path + '/');
   }
 
   // When a nav link is clicked, close the mobile menu
