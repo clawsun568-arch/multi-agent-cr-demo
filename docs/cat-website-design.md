@@ -116,9 +116,9 @@ Still a static frontend app — no backend. Data lives in a JSON file fetched at
 flowchart TD
     U[User Browser] --> FE[React App]
     FE --> DATA[cat-data.json]
-    FE --> IMAGES[/images/ folder]
+    FE --> IMAGES[images folder]
 
-    subgraph "Static Website (Vite build)"
+    subgraph StaticWebsite["Static Website - Vite build"]
       FE
       DATA
       IMAGES
@@ -190,6 +190,13 @@ erDiagram
     }
 ```
 
+> **What is PHOTO?** Each cat can have multiple additional photos beyond its main `photoUrl`.
+> These extra photos are stored in a `gallery` array on the Cat object. Each gallery entry is
+> a PHOTO — just an image URL and an optional text caption. For example, Mochi's profile page
+> might show her main photo at the top, then a gallery grid below with photos captioned
+> "Playing with feather toy" and "Nap time on the couch". The `||--o{` arrow means
+> "one Cat has zero or many Photos" (the `o{` means optional/many).
+
 ### 5.2 New fields explained
 
 | Field | Type | Why added |
@@ -201,7 +208,21 @@ erDiagram
 ### 5.3 Site configuration (new)
 
 A new `siteConfig` object in `cat-data.json` stores cattery-wide settings so content
-editors can update branding without touching code:
+editors can update branding without touching code.
+
+> **Why a single JSON file? What are the alternatives?**
+>
+> | Approach | Pros | Cons |
+> |----------|------|------|
+> | **Single JSON file** (current) | Simple, one file to edit, no build step needed, works with any static host | All data in one place can get large, no validation on edit, manual editing is error-prone |
+> | **Multiple JSON files** (e.g. `cats.json`, `site-config.json`, `gallery.json`) | Separation of concerns, smaller files, different people can edit different files | More fetch calls on page load, more files to manage |
+> | **Markdown/MDX files per cat** (like a blog) | Each cat gets its own file, easy to add new cats, content feels natural | Requires a build step to transform to data, more complex setup |
+> | **Headless CMS** (e.g. Contentful, Sanity, Strapi) | Visual editing UI, validation, image hosting, multi-user | External dependency, potential cost, more complex deployment |
+> | **Backend API + database** | Full CRUD, search, filtering, scales well | Need to build/host a server, authentication, much more complexity |
+>
+> For v2 we stick with **single JSON** because it's the simplest path that works.
+> When the file grows past ~50 cats, consider splitting into multiple JSON files
+> or migrating to a headless CMS. This is tracked in the future roadmap (section 11).
 
 ```json
 {
@@ -333,7 +354,7 @@ flowchart TD
         PhotoGrid["PhotoGrid (masonry)"]
     end
 
-    PhotoGrid --> LightboxModal["LightboxModal"]
+    PhotoGrid --> LightboxModal["LightboxModal (full-screen image viewer)"]
 
     subgraph ContactPage
         HB5["HeroBanner"]
@@ -351,19 +372,86 @@ flowchart TD
 | `HeroBanner` | About, Our Cats, Kittens, Gallery, Contact | Full-width banner with title overlay |
 | `CatCard` | Our Cats, Featured Cats | Clickable card showing cat summary |
 | `CatSection` | Our Cats, Home | Groups cards under a heading |
-| `ImageCarousel` | Kitten Card, Hero | Prev/next image slider |
+| `ImageCarousel` | Kitten Card, HomePage hero | Prev/next image slider |
 | `SocialIcons` | Contact, Footer | Instagram/Facebook/etc icon links |
 
-### 6.3 Component responsibility notes
+### 6.3 Web design terminology
+
+> These terms come up a lot in the component tree. Here's what they mean:
+>
+> - **Hero** — the large, attention-grabbing section at the very top of a page. It's called "hero"
+>   because it's the "hero shot" — the first thing visitors see. Usually a big photo or slideshow
+>   that spans the full width of the screen. On the Peach Blossom site, the hero is the cat photo
+>   carousel at the top of the Home page.
+>
+> - **Banner** — a full-width horizontal strip, usually with a background image, a dark overlay
+>   for readability, and centered white text (the page title). On interior pages (Gallery, Contact,
+>   etc.) the banner replaces the hero carousel with a simpler static image + title. Our
+>   `HeroBanner` component is this — reused on 5 pages.
+>
+> - **Carousel / Slider** — a component that shows one image at a time and lets you swipe or
+>   click arrows to see the next/previous image. The homepage has a large hero carousel;
+>   kitten cards have small thumbnail carousels.
+>
+> - **Masonry grid** — a layout where items are arranged like bricks in a wall — columns of
+>   different heights that fill space efficiently (like Pinterest). Our gallery page uses this.
+>
+> - **Modal** — a popup overlay that appears on top of the page, dimming the background.
+>   You interact with the modal content and close it to return to the page underneath.
+
+### 6.4 Component responsibility notes
 
 - **Layout** wraps every page with NavBar at top and Footer at bottom using React Router's `<Outlet>`
 - **HeroBanner** is a simple component: takes a `title` string and optional `backgroundImage` URL, renders a full-width div with dark overlay and centered white text
 - **ImageCarousel** manages its own `currentIndex` state and renders prev/next arrow buttons. Used at two scales: full-width on HomePage hero, and thumbnail-size inside KittenCard
-- **LightboxModal** uses a React portal to render over everything. Receives an array of image URLs + current index. Handles keyboard (Escape to close, arrow keys to navigate)
+- **LightboxModal** — a "lightbox" is a common web UI pattern: when you click a photo in a gallery,
+  it opens a **full-screen dark overlay** showing the image at large size, with left/right arrows to
+  browse through photos and an X button (or Escape key) to close. Think of it like a photo slideshow
+  popup. Technically, it uses a React **portal** (renders outside the normal DOM tree so it can sit
+  on top of everything) and traps keyboard focus inside itself while open
 
 ---
 
 ## 7) File layout (v2)
+
+### 7.1 Architecture pattern
+
+This project uses a **component-based architecture** organized by **role/responsibility**:
+
+| Folder | Role | What goes here |
+|--------|------|----------------|
+| `components/` | **Reusable UI pieces** | Building blocks used across multiple pages (cards, buttons, nav, modals). Each component is a single `.tsx` file that renders a piece of UI. |
+| `pages/` | **Full page views** | One file per route/URL. Each page composes multiple components together. Pages are like "screens" in a mobile app. |
+| `data/` | **Type definitions** | TypeScript interfaces that define the shape of our data (what fields a Cat has, etc.). No UI code here. |
+| `utils/` | **Helper functions** | Pure logic with no UI — things like calculating age from a birth date. These are the easiest to unit test. |
+| `test/` | **Test setup** | Configuration files that run before tests (e.g. adding custom matchers). |
+| `public/` | **Static assets** | Files served as-is (JSON data, images). Not processed by Vite's bundler. |
+
+> **Why this structure?** It follows the standard React convention of grouping by **what the code does**
+> (component vs page vs utility) rather than by feature. This makes it easy to find things:
+> need a reusable card? Look in `components/`. Need the Gallery page? Look in `pages/`.
+> Need a helper function? Look in `utils/`.
+>
+> Other common patterns include grouping by **feature** (e.g. `gallery/GalleryPage.tsx`,
+> `gallery/PhotoGrid.tsx`, `gallery/gallery.css` all in one folder). That works well for large
+> apps with many features but is overkill for our ~15 component project.
+
+### 7.2 Test file placement
+
+> **Should test files be separate from the code they test?**
+>
+> There are two common conventions:
+> - **Co-located** (our choice): `CatCard.tsx` and `CatCard.test.tsx` sit in the same folder.
+>   This makes it easy to see at a glance whether a component has tests. When you open the
+>   `components/` folder, you see each component paired with its test file.
+> - **Separate `__tests__/` folder**: All tests in a dedicated directory. This keeps the
+>   source folder "clean" but makes it harder to notice missing tests.
+>
+> We use co-located tests because the React community (and tools like Vitest/Jest) favor it,
+> and it keeps related files together. The one exception is `test/setup.ts` which is
+> infrastructure, not a test for a specific file.
+
+### 7.3 Directory tree
 
 ```text
 cat-site/
@@ -371,17 +459,17 @@ cat-site/
   tsconfig.json             # TypeScript config
   vite.config.ts            # Vite build config
   vitest.config.ts          # Test runner config (Vitest)
-  public/
+  public/                   # --- STATIC ASSETS (served as-is, not bundled) ---
     cat-data.json           # All cat data + site config (edit to update content)
     images/                 # Cat photos, hero images, gallery images
-  src/
-    components/
+  src/                      # --- SOURCE CODE ---
+    components/             # --- REUSABLE UI BUILDING BLOCKS ---
       NavBar.tsx            # Top navigation bar with logo and links
       NavBar.test.tsx       # Tests for NavBar
       Footer.tsx            # Footer with links and social icons
       Layout.tsx            # Wraps pages with NavBar + Footer
-      HeroBanner.tsx        # Reusable full-width page banner
-      HeroCarousel.tsx      # Image carousel for homepage hero
+      HeroBanner.tsx        # Reusable full-width page banner (see "banner" in section 6.3)
+      HeroCarousel.tsx      # Image carousel for homepage hero (see "hero" in section 6.3)
       CatCard.tsx           # Clickable cat summary card (existing, enhanced)
       CatCard.test.tsx      # Tests for CatCard
       CatSection.tsx        # Groups cat cards under a heading (existing)
@@ -390,23 +478,23 @@ cat-site/
       KittenCard.tsx        # Card with image carousel + personality + status
       ImageCarousel.tsx     # Reusable prev/next image slider
       PhotoGrid.tsx         # Masonry-style image grid
-      LightboxModal.tsx     # Full-screen image viewer overlay
+      LightboxModal.tsx     # Full-screen image viewer overlay (see "lightbox" in section 6.3)
       SocialIcons.tsx       # Social media icon links
       IntroSection.tsx      # Welcome/philosophy text block
       FeaturedCats.tsx      # Highlighted cats on homepage
-    data/
+    data/                   # --- DATA LAYER (types only, no UI) ---
       types.ts              # TypeScript interfaces (Cat, Photo, SiteConfig, etc.)
-    pages/
-      HomePage.tsx          # Landing page with hero + intro + featured
-      AboutPage.tsx         # Breed info page
-      OurCatsPage.tsx       # Kings & Queens listing
-      AvailableKittensPage.tsx  # Available/sold kittens grid
-      GalleryPage.tsx       # Photo gallery with lightbox
-      ContactPage.tsx       # Contact info and social links
-    utils/
+    pages/                  # --- FULL PAGE VIEWS (one per route/URL) ---
+      HomePage.tsx          # / → Landing page with hero + intro + featured
+      AboutPage.tsx         # /about → Breed info page
+      OurCatsPage.tsx       # /our-cats → Kings & Queens listing
+      AvailableKittensPage.tsx  # /kittens → Available/sold kittens grid
+      GalleryPage.tsx       # /gallery → Photo gallery with lightbox
+      ContactPage.tsx       # /contact → Contact info and social links
+    utils/                  # --- HELPER FUNCTIONS (pure logic, no UI) ---
       ageCalculator.ts      # Compute age from birthDate (existing)
-      ageCalculator.test.ts # Tests for age calculator
-    test/
+      ageCalculator.test.ts # Tests for age calculator (co-located)
+    test/                   # --- TEST INFRASTRUCTURE ---
       setup.ts              # Test setup (jsdom, testing-library matchers)
     App.tsx                 # Root component — BrowserRouter + Routes
     App.css                 # All styles (CSS variables, responsive grid)
