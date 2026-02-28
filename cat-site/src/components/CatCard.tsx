@@ -15,8 +15,7 @@ export function CatCard({ cat, onClick }: CatCardProps) {
   const isOwned = cat.status === 'owned';
   const [imageError, setImageError] = useState(false);
   
-  // Check if photo URL is valid (not empty and starts with http)
-  const hasValidPhoto = cat.photoUrl && cat.photoUrl.startsWith('http');
+  const hasValidPhoto = !!cat.photoUrl;
   
   // Build accessible label
   const ageLabel = isOwned 

@@ -26,7 +26,7 @@ export function AboutPage() {
     <div className="about-page">
       <HeroBanner
         title="About Us"
-        backgroundImage="https://placecats.com/poppy/1200/500"
+        backgroundImage="/images/matcha-1.jpg"
       />
 
       <div className="about-content">

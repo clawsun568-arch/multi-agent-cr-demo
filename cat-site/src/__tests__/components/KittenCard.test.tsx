@@ -13,11 +13,11 @@ function makeKitten(overrides: Partial<Cat> = {}): Cat {
     role: 'kitten',
     color: 'Black Golden Longhair',
     available: true,
-    photoUrl: 'https://placecats.com/pomelo/300/200',
+    photoUrl: '/images/pomelo.jpg',
     birthDate: '2025-12-01',
     personality: 'Very smart, loves to cuddle',
     gallery: [
-      { url: 'https://placecats.com/pomelo/400/300', caption: 'Playing' },
+      { url: '/images/pomelo-2.jpg', caption: 'Playing' },
     ],
     ...overrides,
   };

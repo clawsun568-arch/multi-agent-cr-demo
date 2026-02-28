@@ -22,9 +22,9 @@ import { HeroCarousel } from '../../components/HeroCarousel';
 import type { HeroImage } from '../../data/types';
 
 const mockImages: HeroImage[] = [
-  { url: 'https://placecats.com/bella/1200/500', alt: 'Cat one' },
-  { url: 'https://placecats.com/millie/1200/500', alt: 'Cat two' },
-  { url: 'https://placecats.com/neo/1200/500', alt: 'Cat three' },
+  { url: '/images/machi-1.jpg', alt: 'Cat one' },
+  { url: '/images/matcha-1.jpg', alt: 'Cat two' },
+  { url: '/images/machi-2.jpg', alt: 'Cat three' },
 ];
 
 describe('HeroCarousel', () => {

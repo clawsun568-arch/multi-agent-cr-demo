@@ -15,7 +15,7 @@ interface KittenCardProps {
 
 export function KittenCard({ kitten, onClick }: KittenCardProps) {
   const isAvailable = kitten.available !== false;
-  const hasValidPhoto = kitten.photoUrl && kitten.photoUrl.startsWith('http');
+  const hasValidPhoto = !!kitten.photoUrl;
   const age = kitten.birthDate ? calculateAge(kitten.birthDate) : null;
 
   // Build carousel photos: main photo + gallery

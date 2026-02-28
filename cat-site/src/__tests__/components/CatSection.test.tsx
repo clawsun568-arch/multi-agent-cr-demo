@@ -26,7 +26,7 @@ function makeCat(id: string, name: string): Cat {
     breed: 'Ragdoll',
     gender: 'Female',
     status: 'owned',
-    photoUrl: 'https://placecats.com/test/300/200',
+    photoUrl: '/images/test.jpg',
     birthDate: '2022-01-01',
   };
 }

@@ -33,7 +33,7 @@ export function AvailableKittensPage() {
     <div className="kittens-page">
       <HeroBanner
         title="Available Kittens"
-        backgroundImage="https://placecats.com/millie/1200/500"
+        backgroundImage="/images/matcha-1.jpg"
       />
 
       <div className="kittens-content">

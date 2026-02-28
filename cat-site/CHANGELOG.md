@@ -2,6 +2,25 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.0.0] - 2026-02-28
+
+### Changed
+- **Real cat photos** — replaced all 7 placeholder cats with 2 real cats: Machi (King) and Matcha (Queen), using actual HEIC→JPEG converted photos
+- **Image path validation** — CatCard and KittenCard now accept local `/images/` paths in addition to HTTP URLs
+- **Hero banners** — all page hero banners now use real cat photos instead of placecats.com
+- **Gallery & hero images** — site config updated with 3 real photos for hero carousel and gallery
+- **Breed info** — simplified to British Shorthair only, using real photo
+- **cat-data.json** — complete rewrite with Machi and Matcha as the only cats
+
+### Added
+- **Cat management CLI** — `npm run cats` interactive script for listing, adding, editing, and removing cats from cat-data.json
+- **Content management proposal** — Cloudinary for image hosting + CLI tool for JSON editing (see PR description)
+
+### Removed
+- All placeholder cat data (Mochi, Sakura, Taro, Kenzo, Pomelo, Yuzu, Mikan)
+- All placecats.com URL references
+- HEIC source images (converted to JPEG)
+
 ## [1.9.0] - 2026-02-28
 
 ### Fixed

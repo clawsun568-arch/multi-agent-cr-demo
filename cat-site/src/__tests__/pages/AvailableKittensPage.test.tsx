@@ -3,7 +3,7 @@ import { render, screen, waitFor } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import { AvailableKittensPage } from '../../pages/AvailableKittensPage';
 
-const mockData = {
+const mockDataWithKittens = {
   cats: [
     {
       id: 'kit_1',
@@ -14,11 +14,11 @@ const mockData = {
       role: 'kitten',
       color: 'Black Golden Longhair',
       available: true,
-      photoUrl: 'https://placecats.com/pomelo/300/200',
+      photoUrl: '/images/pomelo.jpg',
       birthDate: '2025-12-01',
       personality: 'Very smart and cuddly',
       gallery: [
-        { url: 'https://placecats.com/pomelo/400/300', caption: 'Playing' },
+        { url: '/images/pomelo-2.jpg', caption: 'Playing' },
       ],
     },
     {
@@ -30,19 +30,44 @@ const mockData = {
       role: 'kitten',
       color: 'Black Golden Shorthair',
       available: false,
-      photoUrl: 'https://placecats.com/mikan/300/200',
+      photoUrl: '/images/mikan.jpg',
       birthDate: '2025-10-15',
       personality: 'Gentle and sweet',
     },
     {
-      id: 'cat_1',
-      name: 'Taro',
+      id: 'machi',
+      name: 'Machi',
       breed: 'British Shorthair',
       gender: 'Male',
       status: 'owned',
       role: 'king',
-      photoUrl: 'https://placecats.com/taro/300/200',
-      birthDate: '2021-08-20',
+      photoUrl: '/images/machi-1.jpg',
+      birthDate: '2023-01-01',
+    },
+  ],
+};
+
+const mockDataNoKittens = {
+  cats: [
+    {
+      id: 'machi',
+      name: 'Machi',
+      breed: 'British Shorthair',
+      gender: 'Male',
+      status: 'owned',
+      role: 'king',
+      photoUrl: '/images/machi-1.jpg',
+      birthDate: '2023-01-01',
+    },
+    {
+      id: 'matcha',
+      name: 'Matcha',
+      breed: 'British Shorthair',
+      gender: 'Female',
+      status: 'owned',
+      role: 'queen',
+      photoUrl: '/images/matcha-1.jpg',
+      birthDate: '2023-06-01',
     },
   ],
 };
@@ -54,7 +79,7 @@ describe('AvailableKittensPage', () => {
       vi.fn(() =>
         Promise.resolve({
           ok: true,
-          json: () => Promise.resolve(mockData),
+          json: () => Promise.resolve(mockDataWithKittens),
         })
       )
     );
@@ -97,8 +122,8 @@ describe('AvailableKittensPage', () => {
     });
 
     expect(screen.getByText('Mikan')).toBeInTheDocument();
-    // Taro is a king, should not appear
-    expect(screen.queryByText('Taro')).not.toBeInTheDocument();
+    // Machi is a king, should not appear
+    expect(screen.queryByText('Machi')).not.toBeInTheDocument();
   });
 
   it('shows Available and Sold badges correctly', async () => {
@@ -122,7 +147,7 @@ describe('AvailableKittensPage', () => {
       vi.fn(() =>
         Promise.resolve({
           ok: true,
-          json: () => Promise.resolve({ cats: [mockData.cats[2]] }), // only the king
+          json: () => Promise.resolve(mockDataNoKittens),
         })
       )
     );

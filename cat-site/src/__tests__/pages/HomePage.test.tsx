@@ -23,28 +23,28 @@ const mockData = {
     tagline: 'Raising beautiful cats with love',
     introText: 'Welcome to our wonderful cattery.',
     heroImages: [
-      { url: 'https://placecats.com/bella/1200/500', alt: 'Cat one' },
-      { url: 'https://placecats.com/millie/1200/500', alt: 'Cat two' },
+      { url: '/images/machi-1.jpg', alt: 'Cat one' },
+      { url: '/images/matcha-1.jpg', alt: 'Cat two' },
     ],
   },
   cats: [
     {
-      id: 'cat_1',
-      name: 'Mochi',
-      breed: 'Ragdoll',
-      gender: 'Female',
+      id: 'machi',
+      name: 'Machi',
+      breed: 'British Shorthair',
+      gender: 'Male',
       status: 'owned',
-      photoUrl: 'https://placecats.com/mochi/300/200',
-      birthDate: '2022-01-01',
+      photoUrl: '/images/machi-1.jpg',
+      birthDate: '2023-01-01',
     },
     {
-      id: 'cat_2',
-      name: 'Sakura',
-      breed: 'Scottish Fold',
+      id: 'matcha',
+      name: 'Matcha',
+      breed: 'British Shorthair',
       gender: 'Female',
-      status: 'planned',
-      photoUrl: 'https://placecats.com/sakura/300/200',
-      expectedDate: '2026-06',
+      status: 'owned',
+      photoUrl: '/images/matcha-1.jpg',
+      birthDate: '2023-06-01',
     },
   ],
 };
@@ -121,8 +121,8 @@ describe('HomePage', () => {
       ).toBeInTheDocument();
     });
 
-    expect(screen.getByText('Mochi')).toBeInTheDocument();
-    expect(screen.getByText('Sakura')).toBeInTheDocument();
+    expect(screen.getByText('Machi')).toBeInTheDocument();
+    expect(screen.getByText('Matcha')).toBeInTheDocument();
   });
 
   it('shows "View All Cats" link', async () => {
@@ -179,7 +179,7 @@ describe('HomePage', () => {
     );
 
     await waitFor(() => {
-      expect(screen.getByText('Mochi')).toBeInTheDocument();
+      expect(screen.getByText('Machi')).toBeInTheDocument();
     });
 
     // Hero carousel should not be present without siteConfig
