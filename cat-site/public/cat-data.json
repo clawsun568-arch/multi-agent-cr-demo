@@ -77,6 +77,63 @@
       "mother": "Princess Mittens",
       "createdAt": "2024-01-01T00:00:00Z",
       "updatedAt": "2024-01-01T00:00:00Z"
+    },
+    {
+      "id": "cat_005",
+      "name": "Pomelo",
+      "status": "owned",
+      "photoUrl": "https://placecats.com/millie/600/400",
+      "birthDate": "2025-12-01",
+      "breed": "British Longhair",
+      "gender": "Female",
+      "role": "kitten",
+      "color": "Black Golden Longhair",
+      "available": true,
+      "personality": "Very smart, loves to cuddle with other cats and explore new places around the house",
+      "father": "Taro",
+      "mother": "Mochi",
+      "gallery": [
+        { "url": "https://placecats.com/millie/400/300", "caption": "Playing with feather toy" },
+        { "url": "https://placecats.com/millie/500/400", "caption": "Nap time on the couch" },
+        { "url": "https://placecats.com/millie/450/350", "caption": "First day home" }
+      ]
+    },
+    {
+      "id": "cat_006",
+      "name": "Yuzu",
+      "status": "owned",
+      "photoUrl": "https://placecats.com/neo/600/400",
+      "birthDate": "2025-12-01",
+      "breed": "British Shorthair",
+      "gender": "Male",
+      "role": "kitten",
+      "color": "Blue Point Bicolor",
+      "available": true,
+      "personality": "Adventurous and bold, always the first to investigate something new",
+      "father": "Taro",
+      "mother": "Mochi",
+      "gallery": [
+        { "url": "https://placecats.com/neo/400/300", "caption": "Exploring the garden" },
+        { "url": "https://placecats.com/neo/500/400", "caption": "Sunbathing by the window" }
+      ]
+    },
+    {
+      "id": "cat_007",
+      "name": "Mikan",
+      "status": "owned",
+      "photoUrl": "https://placecats.com/bella/600/400",
+      "birthDate": "2025-10-15",
+      "breed": "British Shorthair",
+      "gender": "Female",
+      "role": "kitten",
+      "color": "Black Golden Shorthair",
+      "available": false,
+      "personality": "Gentle and sweet, purrs the moment you pick her up",
+      "father": "Kenzo",
+      "mother": "Mochi",
+      "gallery": [
+        { "url": "https://placecats.com/bella/400/300", "caption": "Being adorable" }
+      ]
     }
   ]
 }

@@ -574,6 +574,186 @@ body {
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
+/* ===== AVAILABLE KITTENS PAGE ===== */
+.kittens-content {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 2rem 1rem;
+}
+
+.kitten-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 1.5rem;
+}
+
+/* ===== KITTEN CARD ===== */
+.kitten-card {
+  background: var(--color-surface);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+  transition: transform 0.2s, box-shadow 0.2s;
+  cursor: pointer;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+  width: 100%;
+  border: none;
+  padding: 0;
+  font: inherit;
+  color: inherit;
+}
+
+.kitten-card:hover,
+.kitten-card:focus {
+  transform: translateY(-4px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.kitten-card-image {
+  position: relative;
+  width: 100%;
+  height: 280px;
+  overflow: hidden;
+}
+
+.kitten-card-placeholder {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, #e0e0e0, #f0f0f0);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 4rem;
+  opacity: 0.3;
+}
+
+.kitten-status-badge {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  z-index: 2;
+}
+
+.kitten-status-badge.available {
+  background: var(--color-owned);
+  color: white;
+}
+
+.kitten-status-badge.sold {
+  background: #E0E0E0;
+  color: #666;
+}
+
+.kitten-card-info {
+  padding: 1.25rem;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.kitten-card-name {
+  font-size: 1.25rem;
+  margin-bottom: 0.25rem;
+}
+
+.kitten-card-gender {
+  font-weight: 400;
+  color: var(--color-text-muted);
+}
+
+.kitten-card-color {
+  color: var(--color-primary);
+  font-weight: 600;
+  font-size: 0.9rem;
+  margin-bottom: 0.25rem;
+}
+
+.kitten-card-age {
+  color: var(--color-text-muted);
+  font-size: 0.85rem;
+  margin-bottom: 0.5rem;
+}
+
+.kitten-card-personality {
+  font-size: 0.9rem;
+  color: var(--color-text-muted);
+  line-height: 1.4;
+  margin-bottom: 0.75rem;
+}
+
+/* ===== IMAGE CAROUSEL ===== */
+.image-carousel {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.image-carousel-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.carousel-control {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(0, 0, 0, 0.4);
+  color: white;
+  border: none;
+  font-size: 1.5rem;
+  line-height: 1;
+  padding: 0.25rem 0.5rem;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: background 0.2s;
+  z-index: 2;
+}
+
+.carousel-control:hover {
+  background: rgba(0, 0, 0, 0.7);
+}
+
+.carousel-control--prev {
+  left: 0.5rem;
+}
+
+.carousel-control--next {
+  right: 0.5rem;
+}
+
+.carousel-dots {
+  position: absolute;
+  bottom: 0.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 0.35rem;
+  z-index: 2;
+}
+
+.carousel-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.5);
+}
+
+.carousel-dot--active {
+  background: white;
+}
+
 /* ===== OUR CATS PAGE ===== */
 .our-cats-content {
   max-width: var(--max-width);
@@ -835,6 +1015,14 @@ body {
 
   .cat-grid {
     grid-template-columns: 1fr;
+  }
+
+  .kitten-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .kitten-card-image {
+    height: 220px;
   }
 
   .page-header h1 {
