@@ -38,6 +38,10 @@ export interface Cat {
   photoUrl: string;        // Main/hero photo
   gallery?: Photo[];       // Additional photos for profile page
   
+  // Role & appearance
+  role?: 'king' | 'queen' | 'kitten';
+  color?: string;          // Coat color (e.g. "Seal Point")
+
   // Details
   personality?: string;    // Description of cat's personality
   

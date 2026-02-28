@@ -57,8 +57,8 @@ export function CatProfilePage() {
       <div className="stub-page">
         <h1>Cat Not Found</h1>
         <p>Sorry, we couldn't find a cat with that ID.</p>
-        <Link to="/" className="back-button">
-          &larr; Back to Home
+        <Link to="/our-cats" className="back-button">
+          &larr; Back to Cats
         </Link>
       </div>
     );
@@ -82,7 +82,7 @@ export function CatProfilePage() {
       {/* Back button — uses <Link> to navigate back via React Router
           instead of the old onBack callback */}
       <Link
-        to="/"
+        to="/our-cats"
         className="back-button"
         aria-label="Go back to cat list"
       >
@@ -127,6 +127,11 @@ export function CatProfilePage() {
             {age && (
               <span className="meta-item">
                 <strong>Age:</strong> {age}
+              </span>
+            )}
+            {cat.color && (
+              <span className="meta-item">
+                <strong>Color:</strong> {cat.color}
               </span>
             )}
             {!isOwned && cat.expectedDate && (

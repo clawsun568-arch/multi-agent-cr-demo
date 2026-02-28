@@ -561,6 +561,48 @@ body {
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
+/* ===== OUR CATS PAGE ===== */
+.our-cats-content {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 2rem 1rem;
+}
+
+/* ===== HERO BANNER =====
+   Full-width banner for interior pages (Our Cats, About, etc.).
+   Shows a background image with dark overlay, or a gradient fallback. */
+.hero-banner {
+  position: relative;
+  width: 100%;
+  height: 300px;
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.hero-banner--gradient {
+  background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+}
+
+.hero-banner-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+}
+
+.hero-banner-title {
+  position: relative;
+  z-index: 1;
+  color: white;
+  font-size: 3rem;
+  font-weight: 300;
+  text-align: center;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
 /* ===== HERO CAROUSEL =====
    Full-width image carousel at the top of the homepage.
    Uses absolute positioning for slides with opacity transitions. */
@@ -748,6 +790,14 @@ body {
 }
 
 @media (max-width: 600px) {
+  .hero-banner {
+    height: 200px;
+  }
+
+  .hero-banner-title {
+    font-size: 2rem;
+  }
+
   .hero-carousel {
     height: 250px;
   }
