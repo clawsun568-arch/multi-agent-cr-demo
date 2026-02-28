@@ -39,6 +39,10 @@ export function CatProfilePage() {
   // Track whether the hero image failed to load (shows placeholder instead)
   const [imageError, setImageError] = useState(false);
 
+  // Find the cat that matches the URL parameter (needed for usePageTitle)
+  const cat = cats.find(c => c.id === id);
+  usePageTitle(cat?.name);
+
   // Show loading state while data is being fetched
   if (loading) {
     return <div className="loading">Loading...</div>;
@@ -48,10 +52,6 @@ export function CatProfilePage() {
   if (error) {
     return <div className="error">Error: {error}</div>;
   }
-
-  // Find the cat that matches the URL parameter
-  const cat = cats.find(c => c.id === id);
-  usePageTitle(cat?.name);
 
   // If no cat matches the ID, show a friendly "not found" page
   if (!cat) {

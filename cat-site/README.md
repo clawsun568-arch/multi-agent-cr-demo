@@ -1,73 +1,121 @@
-# React + TypeScript + Vite
+# My Cattery Website
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A cat cattery website built with React + TypeScript + Vite.
 
-Currently, two official plugins are available:
+## Managing Cat Data
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+All cat and site content lives in one file: `public/cat-data.json`. No code changes needed to add, edit, or remove cats.
 
-## React Compiler
+You can edit it manually or use the CLI tool: `npm run cats`
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+### Image files
 
-## Expanding the ESLint configuration
+Put all images in `public/images/`. Use JPEG format (convert HEIC first if needed).
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+There are two types of images:
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+| Type | Size | Used for |
+|------|------|----------|
+| Regular photo | ~1200px wide | Cat cards, gallery, profile pages |
+| Banner photo | ~1400x600px (landscape crop) | Hero banners at the top of pages |
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+### Where each image field shows up
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+#### `siteConfig.heroImages` — Homepage carousel
+
+The sliding image carousel on the homepage. Use wide banner-cropped images.
+
+```json
+"heroImages": [
+  { "url": "/images/machi-1-banner.jpg", "alt": "Machi relaxing at home" },
+  { "url": "/images/matcha-1-banner.jpg", "alt": "Matcha posing elegantly" }
+]
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+#### `siteConfig.galleryImages` — Gallery page grid
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+The photo grid on the /gallery page. Use regular-sized images.
 
-export default defineConfig([
-  globalIgnores(['dist']),
+```json
+"galleryImages": [
+  { "url": "/images/machi-1.jpg", "caption": "Machi relaxing at home" },
+  { "url": "/images/matcha-1.jpg", "caption": "Matcha looking elegant" }
+]
+```
+
+#### `siteConfig.about.breeds[].photoUrl` — About page breed card
+
+The photo shown next to the breed description on the /about page.
+
+```json
+"breeds": [
   {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+    "breedName": "British Shorthair",
+    "photoUrl": "/images/machi-1.jpg",
+    ...
+  }
+]
+```
+
+#### `cats[].photoUrl` — Cat card main photo
+
+The primary photo shown on cat cards (Our Cats page, Featured Cats on homepage, profile page header).
+
+```json
+{
+  "id": "machi",
+  "name": "Machi",
+  "photoUrl": "/images/machi-1.jpg",
+  ...
+}
+```
+
+#### `cats[].gallery` — Cat profile extra photos
+
+Additional photos shown on a cat's individual profile page (/our-cats/machi).
+
+```json
+{
+  "id": "machi",
+  "gallery": [
+    { "url": "/images/machi-2.jpg", "caption": "Machi looking handsome" }
+  ],
+  ...
+}
+```
+
+### Adding a new cat — step by step
+
+1. Put the cat's photo(s) in `public/images/` (e.g. `public/images/newcat-1.jpg`)
+2. Optionally create a banner crop for hero use (~1400x600px)
+3. Run `npm run cats` and select "Add cat", or edit `public/cat-data.json` directly
+4. Set the `role` field to control where the cat appears:
+   - `"king"` — shows under Kings on the Our Cats page
+   - `"queen"` — shows under Queens on the Our Cats page
+   - `"kitten"` — shows on the Available Kittens page
+5. Optionally add the new images to `heroImages` and/or `galleryImages` in `siteConfig`
+6. Deploy
+
+No code changes needed. The site reads from `cat-data.json` and renders everything automatically.
+
+### Interior page hero banners
+
+Each page has a hardcoded banner image path. To change which banner shows on a specific page, edit the `backgroundImage` prop in:
+
+| Page | File | Current banner |
+|------|------|----------------|
+| Our Cats | `src/pages/OurCatsPage.tsx` | `/images/machi-1-banner.jpg` |
+| Kittens | `src/pages/AvailableKittensPage.tsx` | `/images/matcha-1-banner.jpg` |
+| Gallery | `src/pages/GalleryPage.tsx` | `/images/machi-2-banner.jpg` |
+| About | `src/pages/AboutPage.tsx` | `/images/matcha-1-banner.jpg` |
+| Contact | `src/pages/ContactPage.tsx` | `/images/machi-2-banner.jpg` |
+
+## Development
+
+```bash
+npm install      # Install dependencies
+npm run dev      # Start dev server (http://localhost:5173)
+npm run build    # TypeScript check + production build
+npm test         # Run all tests
+npm run cats     # Interactive CLI to manage cat-data.json
 ```

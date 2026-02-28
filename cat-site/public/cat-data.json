@@ -4,23 +4,14 @@
     "tagline": "Raising beautiful, healthy cats with love",
     "introText": "Welcome to My Cattery, where we raise happy, healthy cats in a loving home environment. Each of our cats is treated as family, with top-quality care, regular veterinary checkups, and plenty of socialization. We are passionate about the breeds we work with and strive to produce kittens with wonderful temperaments.",
     "heroImages": [
-      { "url": "https://placecats.com/bella/1200/500", "alt": "Beautiful cat relaxing in a sunny room" },
-      { "url": "https://placecats.com/millie/1200/500", "alt": "Playful kitten exploring the garden" },
-      { "url": "https://placecats.com/neo/1200/500", "alt": "Elegant cat posing on a cozy blanket" }
+      { "url": "/images/machi-1-banner.jpg", "alt": "Machi relaxing at home" },
+      { "url": "/images/matcha-1-banner.jpg", "alt": "Matcha posing elegantly" },
+      { "url": "/images/machi-2-banner.jpg", "alt": "Machi looking handsome" }
     ],
     "galleryImages": [
-      { "url": "https://placecats.com/bella/800/600", "caption": "Taro relaxing in his favorite spot" },
-      { "url": "https://placecats.com/millie/800/600", "caption": "Mochi playing with a feather toy" },
-      { "url": "https://placecats.com/neo/800/600", "caption": "Sakura posing elegantly" },
-      { "url": "https://placecats.com/poppy/800/600", "caption": "Kenzo exploring the garden" },
-      { "url": "https://placecats.com/bella/600/800", "caption": "Taro's portrait" },
-      { "url": "https://placecats.com/millie/700/500", "caption": "Pomelo's first day home" },
-      { "url": "https://placecats.com/neo/600/800", "caption": "Yuzu sunbathing by the window" },
-      { "url": "https://placecats.com/poppy/700/500", "caption": "Family naptime" },
-      { "url": "https://placecats.com/bella/700/500", "caption": "Mikan being adorable" },
-      { "url": "https://placecats.com/millie/600/800", "caption": "Playtime with the crew" },
-      { "url": "https://placecats.com/neo/700/500", "caption": "Cozy blanket moments" },
-      { "url": "https://placecats.com/poppy/800/600", "caption": "Our cattery family" }
+      { "url": "/images/machi-1.jpg", "caption": "Machi relaxing at home" },
+      { "url": "/images/matcha-1.jpg", "caption": "Matcha looking elegant" },
+      { "url": "/images/machi-2.jpg", "caption": "Machi being handsome" }
     ],
     "contact": {
       "email": "hello@mycattery.com",
@@ -37,142 +28,42 @@
           "breedName": "British Shorthair",
           "description": "The British Shorthair is one of the oldest and most beloved cat breeds, known for their round faces, dense plush coats, and calm, easygoing nature. They are the teddy bears of the cat world — sturdy, affectionate, and wonderfully low-maintenance companions.",
           "traits": ["Calm and gentle temperament", "Great with children and other pets", "Dense, plush coat in many colors", "Independent but affectionate", "Robust health and long lifespan"],
-          "photoUrl": "https://placecats.com/bella/800/500"
-        },
-        {
-          "breedName": "Ragdoll",
-          "description": "Ragdolls are large, gentle cats famous for going limp when picked up — hence the name. They are incredibly social, often following their owners from room to room like loyal puppies. With their striking blue eyes and silky semi-long coats, they are as beautiful as they are affectionate.",
-          "traits": ["Extremely affectionate and docile", "Dog-like loyalty and companionship", "Stunning blue eyes and pointed coloring", "Semi-long silky coat", "Excellent lap cats"],
-          "photoUrl": "https://placecats.com/millie/800/500"
+          "photoUrl": "/images/machi-1.jpg"
         }
       ]
     }
   },
   "cats": [
     {
-      "id": "cat_001",
-      "name": "Mochi",
+      "id": "machi",
+      "name": "Machi",
       "status": "owned",
-      "photoUrl": "https://placecats.com/millie/600/400",
-      "birthDate": "2022-03-15",
-      "expectedDate": null,
-      "breed": "Ragdoll",
-      "gender": "Female",
-      "role": "queen",
-      "color": "Seal Point",
-      "personality": "Playful, cuddly, loves feather toys",
-      "father": "Sir Fluffington",
-      "mother": "Lady Whiskers",
-      "notes": "Likes to sleep on the keyboard while you work",
+      "photoUrl": "/images/machi-1.jpg",
+      "birthDate": "2023-01-01",
+      "breed": "British Shorthair",
+      "gender": "Male",
+      "role": "king",
+      "color": "Blue",
+      "personality": "Regal and confident, Machi is the king of the house. He loves chin scratches and supervising everything from his favorite perch.",
+      "gallery": [
+        { "url": "/images/machi-2.jpg", "caption": "Machi looking handsome" }
+      ],
       "createdAt": "2024-01-01T00:00:00Z",
-      "updatedAt": "2024-01-01T00:00:00Z"
+      "updatedAt": "2026-02-28T00:00:00Z"
     },
     {
-      "id": "cat_002",
-      "name": "Sakura",
-      "status": "planned",
-      "photoUrl": "https://placecats.com/neo/600/400",
-      "birthDate": null,
-      "expectedDate": "2026-06",
-      "breed": "Scottish Fold",
+      "id": "matcha",
+      "name": "Matcha",
+      "status": "owned",
+      "photoUrl": "/images/matcha-1.jpg",
+      "birthDate": "2023-06-01",
+      "breed": "British Shorthair",
       "gender": "Female",
       "role": "queen",
       "color": "Lilac",
-      "personality": null,
-      "notes": "Expecting litter in June 2026. Will pick the friendliest kitten.",
+      "personality": "Sweet and gentle, Matcha is the queen of cuddles. She greets every visitor with soft purrs and loves napping in sunny spots.",
       "createdAt": "2024-01-01T00:00:00Z",
-      "updatedAt": "2024-01-01T00:00:00Z"
-    },
-    {
-      "id": "cat_003",
-      "name": "Taro",
-      "status": "owned",
-      "photoUrl": "https://placecats.com/bella/600/400",
-      "birthDate": "2021-08-20",
-      "expectedDate": null,
-      "breed": "British Shorthair",
-      "gender": "Male",
-      "role": "king",
-      "color": "Black Golden",
-      "personality": "Gentle giant, calm and affectionate, loves chin scratches",
-      "father": "Duke Whiskersworth",
-      "mother": "Countess Paws",
-      "createdAt": "2024-01-01T00:00:00Z",
-      "updatedAt": "2024-01-01T00:00:00Z"
-    },
-    {
-      "id": "cat_004",
-      "name": "Kenzo",
-      "status": "owned",
-      "photoUrl": "https://placecats.com/poppy/600/400",
-      "birthDate": "2023-01-10",
-      "expectedDate": null,
-      "breed": "Ragdoll",
-      "gender": "Male",
-      "role": "king",
-      "color": "Blue Bicolor",
-      "personality": "Curious and playful, follows you everywhere like a puppy",
-      "father": "Sir Fluffington",
-      "mother": "Princess Mittens",
-      "createdAt": "2024-01-01T00:00:00Z",
-      "updatedAt": "2024-01-01T00:00:00Z"
-    },
-    {
-      "id": "cat_005",
-      "name": "Pomelo",
-      "status": "owned",
-      "photoUrl": "https://placecats.com/millie/600/400",
-      "birthDate": "2025-12-01",
-      "breed": "British Longhair",
-      "gender": "Female",
-      "role": "kitten",
-      "color": "Black Golden Longhair",
-      "available": true,
-      "personality": "Very smart, loves to cuddle with other cats and explore new places around the house",
-      "father": "Taro",
-      "mother": "Mochi",
-      "gallery": [
-        { "url": "https://placecats.com/millie/400/300", "caption": "Playing with feather toy" },
-        { "url": "https://placecats.com/millie/500/400", "caption": "Nap time on the couch" },
-        { "url": "https://placecats.com/millie/450/350", "caption": "First day home" }
-      ]
-    },
-    {
-      "id": "cat_006",
-      "name": "Yuzu",
-      "status": "owned",
-      "photoUrl": "https://placecats.com/neo/600/400",
-      "birthDate": "2025-12-01",
-      "breed": "British Shorthair",
-      "gender": "Male",
-      "role": "kitten",
-      "color": "Blue Point Bicolor",
-      "available": true,
-      "personality": "Adventurous and bold, always the first to investigate something new",
-      "father": "Taro",
-      "mother": "Mochi",
-      "gallery": [
-        { "url": "https://placecats.com/neo/400/300", "caption": "Exploring the garden" },
-        { "url": "https://placecats.com/neo/500/400", "caption": "Sunbathing by the window" }
-      ]
-    },
-    {
-      "id": "cat_007",
-      "name": "Mikan",
-      "status": "owned",
-      "photoUrl": "https://placecats.com/bella/600/400",
-      "birthDate": "2025-10-15",
-      "breed": "British Shorthair",
-      "gender": "Female",
-      "role": "kitten",
-      "color": "Black Golden Shorthair",
-      "available": false,
-      "personality": "Gentle and sweet, purrs the moment you pick her up",
-      "father": "Kenzo",
-      "mother": "Mochi",
-      "gallery": [
-        { "url": "https://placecats.com/bella/400/300", "caption": "Being adorable" }
-      ]
+      "updatedAt": "2026-02-28T00:00:00Z"
     }
   ]
 }

@@ -6,26 +6,26 @@ import { OurCatsPage } from '../../pages/OurCatsPage';
 const mockData = {
   cats: [
     {
-      id: 'cat_1',
-      name: 'Taro',
+      id: 'machi',
+      name: 'Machi',
       breed: 'British Shorthair',
       gender: 'Male',
       status: 'owned',
       role: 'king',
-      color: 'Black Golden',
-      photoUrl: 'https://placecats.com/taro/300/200',
-      birthDate: '2021-08-20',
+      color: 'Blue',
+      photoUrl: '/images/machi-1.jpg',
+      birthDate: '2023-01-01',
     },
     {
-      id: 'cat_2',
-      name: 'Mochi',
-      breed: 'Ragdoll',
+      id: 'matcha',
+      name: 'Matcha',
+      breed: 'British Shorthair',
       gender: 'Female',
       status: 'owned',
       role: 'queen',
-      color: 'Seal Point',
-      photoUrl: 'https://placecats.com/mochi/300/200',
-      birthDate: '2022-03-15',
+      color: 'Lilac',
+      photoUrl: '/images/matcha-1.jpg',
+      birthDate: '2023-06-01',
     },
   ],
 };
@@ -79,7 +79,7 @@ describe('OurCatsPage', () => {
       expect(screen.getByRole('heading', { name: 'Kings' })).toBeInTheDocument();
     });
 
-    expect(screen.getByText('Taro')).toBeInTheDocument();
+    expect(screen.getByText('Machi')).toBeInTheDocument();
   });
 
   it('renders Queens section with female cats', async () => {
@@ -93,7 +93,7 @@ describe('OurCatsPage', () => {
       expect(screen.getByRole('heading', { name: 'Queens' })).toBeInTheDocument();
     });
 
-    expect(screen.getByText('Mochi')).toBeInTheDocument();
+    expect(screen.getByText('Matcha')).toBeInTheDocument();
   });
 
   it('shows empty message when no kings exist', async () => {
@@ -156,7 +156,7 @@ describe('OurCatsPage', () => {
           gender: 'Female',
           status: 'owned',
           role: 'queen',
-          photoUrl: 'https://placecats.com/a/300/200',
+          photoUrl: '/images/a.jpg',
           birthDate: '2022-01-01',
           personality: 'Very long personality text that takes up extra space in the card',
         },
@@ -167,7 +167,7 @@ describe('OurCatsPage', () => {
           gender: 'Female',
           status: 'planned',
           role: 'queen',
-          photoUrl: 'https://placecats.com/b/300/200',
+          photoUrl: '/images/b.jpg',
           expectedDate: '2026-06',
         },
       ],
@@ -213,13 +213,13 @@ describe('OurCatsPage', () => {
       cats: [
         {
           id: 'cat_1',
-          name: 'Taro',
+          name: 'Machi',
           breed: 'British Shorthair',
           gender: 'Male',
           status: 'owned',
           role: 'king',
-          photoUrl: 'https://placecats.com/taro/300/200',
-          birthDate: '2021-08-20',
+          photoUrl: '/images/machi-1.jpg',
+          birthDate: '2023-01-01',
         },
         {
           id: 'cat_2',
@@ -227,19 +227,19 @@ describe('OurCatsPage', () => {
           breed: 'Ragdoll',
           gender: 'Male',
           status: 'owned',
-          photoUrl: 'https://placecats.com/old/300/200',
+          photoUrl: '/images/old.jpg',
           birthDate: '2020-05-01',
           // no role field — should still appear in Kings via gender fallback
         },
         {
           id: 'cat_3',
-          name: 'Mochi',
-          breed: 'Ragdoll',
+          name: 'Matcha',
+          breed: 'British Shorthair',
           gender: 'Female',
           status: 'owned',
           role: 'queen',
-          photoUrl: 'https://placecats.com/mochi/300/200',
-          birthDate: '2022-03-15',
+          photoUrl: '/images/matcha-1.jpg',
+          birthDate: '2023-06-01',
         },
         {
           id: 'cat_4',
@@ -247,7 +247,7 @@ describe('OurCatsPage', () => {
           breed: 'Scottish Fold',
           gender: 'Female',
           status: 'owned',
-          photoUrl: 'https://placecats.com/oldf/300/200',
+          photoUrl: '/images/oldf.jpg',
           birthDate: '2020-01-01',
           // no role field — should still appear in Queens via gender fallback
         },
@@ -271,15 +271,15 @@ describe('OurCatsPage', () => {
     );
 
     await waitFor(() => {
-      expect(screen.getByText('Taro')).toBeInTheDocument();
+      expect(screen.getByText('Machi')).toBeInTheDocument();
     });
 
     // Both males should appear in Kings (one with role, one via gender fallback)
-    expect(screen.getByText('Taro')).toBeInTheDocument();
+    expect(screen.getByText('Machi')).toBeInTheDocument();
     expect(screen.getByText('OldMale')).toBeInTheDocument();
 
     // Both females should appear in Queens
-    expect(screen.getByText('Mochi')).toBeInTheDocument();
+    expect(screen.getByText('Matcha')).toBeInTheDocument();
     expect(screen.getByText('OldFemale')).toBeInTheDocument();
   });
 
@@ -292,7 +292,7 @@ describe('OurCatsPage', () => {
           breed: 'Ragdoll',
           gender: 'Male',
           status: 'owned',
-          photoUrl: 'https://placecats.com/boy/300/200',
+          photoUrl: '/images/boy.jpg',
           birthDate: '2022-01-01',
         },
         {
@@ -301,7 +301,7 @@ describe('OurCatsPage', () => {
           breed: 'Ragdoll',
           gender: 'Female',
           status: 'owned',
-          photoUrl: 'https://placecats.com/girl/300/200',
+          photoUrl: '/images/girl.jpg',
           birthDate: '2022-01-01',
         },
       ],

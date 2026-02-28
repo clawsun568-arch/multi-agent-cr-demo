@@ -36,7 +36,7 @@ export function OurCatsPage() {
     <div className="our-cats-page">
       <HeroBanner
         title="Our Cats"
-        backgroundImage="https://placecats.com/bella/1200/500"
+        backgroundImage="/images/machi-1-banner.jpg"
       />
 
       <div className="our-cats-content">

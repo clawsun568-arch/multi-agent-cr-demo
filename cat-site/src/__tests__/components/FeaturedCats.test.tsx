@@ -25,7 +25,7 @@ function makeCat(overrides: Partial<Cat> = {}): Cat {
     breed: 'Ragdoll',
     gender: 'Female',
     status: 'owned',
-    photoUrl: 'https://placecats.com/test/300/200',
+    photoUrl: '/images/test.jpg',
     birthDate: '2022-03-15',
     personality: 'Playful and cuddly',
     ...overrides,
@@ -39,8 +39,8 @@ function renderWithRouter(ui: React.ReactElement) {
 
 describe('FeaturedCats', () => {
   const twoCats: Cat[] = [
-    makeCat({ id: 'cat_1', name: 'Mochi', status: 'owned' }),
-    makeCat({ id: 'cat_2', name: 'Sakura', status: 'planned', birthDate: undefined, expectedDate: '2026-06' }),
+    makeCat({ id: 'machi', name: 'Machi', status: 'owned' }),
+    makeCat({ id: 'matcha', name: 'Matcha', status: 'owned' }),
   ];
 
   it('renders the "Meet Our Cats" heading', () => {
@@ -54,8 +54,8 @@ describe('FeaturedCats', () => {
   it('renders cat cards with names', () => {
     renderWithRouter(<FeaturedCats cats={twoCats} onCatClick={() => {}} />);
 
-    expect(screen.getByText('Mochi')).toBeInTheDocument();
-    expect(screen.getByText('Sakura')).toBeInTheDocument();
+    expect(screen.getByText('Machi')).toBeInTheDocument();
+    expect(screen.getByText('Matcha')).toBeInTheDocument();
   });
 
   it('shows "View All Cats" link to /our-cats', () => {
@@ -106,6 +106,6 @@ describe('FeaturedCats', () => {
     const cards = screen.getAllByRole('button');
     fireEvent.click(cards[0]);
 
-    expect(handleClick).toHaveBeenCalledWith('cat_1');
+    expect(handleClick).toHaveBeenCalledWith('machi');
   });
 });

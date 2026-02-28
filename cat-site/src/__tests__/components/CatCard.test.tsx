@@ -35,7 +35,7 @@ function makeCat(overrides: Partial<Cat> = {}): Cat {
     breed: 'Ragdoll',
     gender: 'Female',
     status: 'owned',
-    photoUrl: 'https://placecats.com/test/300/200',
+    photoUrl: '/images/test.jpg',
     birthDate: '2022-03-15',
     personality: 'Playful and cuddly',
     ...overrides,
@@ -136,13 +136,19 @@ describe('CatCard', () => {
     expect(screen.getByText('Planned')).toBeInTheDocument();
   });
 
-  it('shows placeholder emoji when photo URL is not http', () => {
-    // CatCard checks if photoUrl starts with "http" — local paths get placeholder
+  it('shows placeholder emoji when photo URL is empty', () => {
+    const cat = makeCat({ photoUrl: '' });
+    render(<CatCard cat={cat} onClick={() => {}} />);
+
+    const container = document.querySelector('.cat-image-container');
+    expect(container).toHaveClass('no-image');
+  });
+
+  it('renders image for local file paths', () => {
     const cat = makeCat({ photoUrl: '/images/local.jpg' });
     render(<CatCard cat={cat} onClick={() => {}} />);
 
-    // The placeholder container should have the 'no-image' class
     const container = document.querySelector('.cat-image-container');
-    expect(container).toHaveClass('no-image');
+    expect(container).not.toHaveClass('no-image');
   });
 });

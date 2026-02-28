@@ -47,7 +47,7 @@ export function GalleryPage() {
     <div className="gallery-page">
       <HeroBanner
         title="Gallery"
-        backgroundImage="https://placecats.com/bella/1200/500"
+        backgroundImage="/images/machi-1-banner.jpg"
       />
 
       <div className="gallery-content">

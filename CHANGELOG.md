@@ -2,14 +2,15 @@
 
 All notable changes to the Cat Website project.
 
-## [Unreleased]
+## [2.0.0] - 2026-02-28
 
-### Planned (v2 Roadmap)
-- PR 3: Our Cats page (Kings & Queens) + enhanced CatProfilePage + HeroBanner
-- PR 4: Available Kittens page with image carousels and sold/available status
-- PR 5: Gallery page with masonry grid and lightbox modal
-- PR 6: Contact page + About/Breed Info page + social media icons
-- PR 7: Real photos, responsive tuning, accessibility audit
+### Changed — Real Cat Photos & Content Management (PR 8)
+- Replaced all 7 placeholder cats with 2 real cats: Machi (King) and Matcha (Queen)
+- Converted HEIC photos to JPEG for browser compatibility
+- All hero banners and gallery now use real cat photos
+- CatCard and KittenCard accept local `/images/` paths (removed `startsWith('http')` check)
+- Added `npm run cats` CLI tool for managing cat-data.json
+- Added `npm run cats` CLI tool for managing cat-data.json
 
 ## [1.4.0] - 2026-02-27
 

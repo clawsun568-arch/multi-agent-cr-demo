@@ -28,7 +28,7 @@ export function ContactPage() {
     <div className="contact-page">
       <HeroBanner
         title="Contact Us"
-        backgroundImage="https://placecats.com/neo/1200/500"
+        backgroundImage="/images/machi-2-banner.jpg"
       />
 
       <div className="contact-content">
