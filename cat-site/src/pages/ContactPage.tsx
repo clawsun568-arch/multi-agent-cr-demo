@@ -28,7 +28,7 @@ export function ContactPage() {
     <div className="contact-page">
       <HeroBanner
         title="Contact Us"
-        backgroundImage="/images/machi-2.jpg"
+        backgroundImage="/images/machi-2-banner.jpg"
       />
 
       <div className="contact-content">

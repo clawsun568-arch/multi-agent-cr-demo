@@ -47,7 +47,7 @@ export function GalleryPage() {
     <div className="gallery-page">
       <HeroBanner
         title="Gallery"
-        backgroundImage="/images/machi-1.jpg"
+        backgroundImage="/images/machi-1-banner.jpg"
       />
 
       <div className="gallery-content">

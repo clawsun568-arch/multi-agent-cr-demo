@@ -33,7 +33,7 @@ export function AvailableKittensPage() {
     <div className="kittens-page">
       <HeroBanner
         title="Available Kittens"
-        backgroundImage="/images/matcha-1.jpg"
+        backgroundImage="/images/matcha-1-banner.jpg"
       />
 
       <div className="kittens-content">

@@ -4,9 +4,9 @@
     "tagline": "Raising beautiful, healthy cats with love",
     "introText": "Welcome to My Cattery, where we raise happy, healthy cats in a loving home environment. Each of our cats is treated as family, with top-quality care, regular veterinary checkups, and plenty of socialization. We are passionate about the breeds we work with and strive to produce kittens with wonderful temperaments.",
     "heroImages": [
-      { "url": "/images/machi-1.jpg", "alt": "Machi relaxing at home" },
-      { "url": "/images/matcha-1.jpg", "alt": "Matcha posing elegantly" },
-      { "url": "/images/machi-2.jpg", "alt": "Machi looking handsome" }
+      { "url": "/images/machi-1-banner.jpg", "alt": "Machi relaxing at home" },
+      { "url": "/images/matcha-1-banner.jpg", "alt": "Matcha posing elegantly" },
+      { "url": "/images/machi-2-banner.jpg", "alt": "Machi looking handsome" }
     ],
     "galleryImages": [
       { "url": "/images/machi-1.jpg", "caption": "Machi relaxing at home" },
