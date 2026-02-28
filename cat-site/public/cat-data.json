@@ -7,6 +7,20 @@
       { "url": "https://placecats.com/bella/1200/500", "alt": "Beautiful cat relaxing in a sunny room" },
       { "url": "https://placecats.com/millie/1200/500", "alt": "Playful kitten exploring the garden" },
       { "url": "https://placecats.com/neo/1200/500", "alt": "Elegant cat posing on a cozy blanket" }
+    ],
+    "galleryImages": [
+      { "url": "https://placecats.com/bella/800/600", "caption": "Taro relaxing in his favorite spot" },
+      { "url": "https://placecats.com/millie/800/600", "caption": "Mochi playing with a feather toy" },
+      { "url": "https://placecats.com/neo/800/600", "caption": "Sakura posing elegantly" },
+      { "url": "https://placecats.com/poppy/800/600", "caption": "Kenzo exploring the garden" },
+      { "url": "https://placecats.com/bella/600/800", "caption": "Taro's portrait" },
+      { "url": "https://placecats.com/millie/700/500", "caption": "Pomelo's first day home" },
+      { "url": "https://placecats.com/neo/600/800", "caption": "Yuzu sunbathing by the window" },
+      { "url": "https://placecats.com/poppy/700/500", "caption": "Family naptime" },
+      { "url": "https://placecats.com/bella/700/500", "caption": "Mikan being adorable" },
+      { "url": "https://placecats.com/millie/600/800", "caption": "Playtime with the crew" },
+      { "url": "https://placecats.com/neo/700/500", "caption": "Cozy blanket moments" },
+      { "url": "https://placecats.com/poppy/800/600", "caption": "Our cattery family" }
     ]
   },
   "cats": [

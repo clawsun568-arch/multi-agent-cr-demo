@@ -15,6 +15,7 @@ export interface SiteConfig {
   tagline: string;
   introText: string;
   heroImages: HeroImage[];
+  galleryImages?: Photo[];
 }
 
 export interface Photo {
