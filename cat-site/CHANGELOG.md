@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.8.0] - 2026-02-28
+
+### Added
+- **Contact page** — fully implemented with contact details (email, phone, WeChat, Instagram), social media links, and inquiry note
+- **About page** — fully implemented with cattery philosophy section and breed info cards (photo, description, traits)
+- **SocialIcons component** — reusable social media link buttons for Contact page and Footer
+- **Contact and About data** — added `contact` and `about` fields to site config in cat-data.json
+- **Data model** — added `ContactInfo`, `BreedInfo`, and `AboutInfo` interfaces
+- Unit tests for SocialIcons (6), ContactPage (7), and AboutPage (8)
+
+### Changed
+- Footer now displays SocialIcons instead of placeholder text when contact data is available
+- Removed AboutPage and ContactPage from stub page tests (moved to dedicated test files)
+
 ## [1.7.0] - 2026-02-28
 
 ### Added
