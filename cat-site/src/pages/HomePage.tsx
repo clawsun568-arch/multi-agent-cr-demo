@@ -1,5 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { useCatData } from '../hooks/useCatData';
+import { usePageTitle } from '../hooks/usePageTitle';
 import { HeroCarousel } from '../components/HeroCarousel';
 import { IntroSection } from '../components/IntroSection';
 import { FeaturedCats } from '../components/FeaturedCats';
@@ -15,6 +16,7 @@ import { FeaturedCats } from '../components/FeaturedCats';
 export function HomePage() {
   const { cats, siteConfig, loading, error } = useCatData();
   const navigate = useNavigate();
+  usePageTitle();
 
   function handleCatClick(catId: string) {
     navigate(`/our-cats/${catId}`);

@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { useCatData } from '../hooks/useCatData';
+import { usePageTitle } from '../hooks/usePageTitle';
 import { calculateAge } from '../utils/ageCalculator';
 
 /**
@@ -33,7 +34,7 @@ export function CatProfilePage() {
   const { id } = useParams<{ id: string }>();
 
   // Fetch all cat data
-  const { cats, loading, error } = useCatData();
+  const { cats, siteConfig, loading, error } = useCatData();
 
   // Track whether the hero image failed to load (shows placeholder instead)
   const [imageError, setImageError] = useState(false);
@@ -50,6 +51,7 @@ export function CatProfilePage() {
 
   // Find the cat that matches the URL parameter
   const cat = cats.find(c => c.id === id);
+  usePageTitle(cat?.name);
 
   // If no cat matches the ID, show a friendly "not found" page
   if (!cat) {
@@ -69,9 +71,10 @@ export function CatProfilePage() {
   const hasValidPhoto = Boolean(cat.photoUrl);
 
   // Handle contact button click — opens the user's email client
+  const contactEmail = siteConfig?.contact?.email ?? 'contact@example.com';
   const handleContactClick = () => {
     const subject = encodeURIComponent(`Interest in ${cat.name}`);
-    window.location.href = `mailto:contact@example.com?subject=${subject}`;
+    window.location.href = `mailto:${contactEmail}?subject=${subject}`;
   };
 
   // Build descriptive alt text for the hero image

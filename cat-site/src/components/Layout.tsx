@@ -1,6 +1,7 @@
 import { Outlet } from 'react-router-dom';
 import { NavBar } from './NavBar';
 import { Footer } from './Footer';
+import { ScrollToTop } from './ScrollToTop';
 
 /**
  * Layout — Wraps every page with a NavBar at the top and Footer at the bottom.
@@ -31,6 +32,7 @@ import { Footer } from './Footer';
 export function Layout() {
   return (
     <div className="layout">
+      <ScrollToTop />
       <NavBar />
       <main className="layout-main">
         <Outlet />

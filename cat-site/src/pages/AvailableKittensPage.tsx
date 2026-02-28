@@ -1,5 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { useCatData } from '../hooks/useCatData';
+import { usePageTitle } from '../hooks/usePageTitle';
 import { HeroBanner } from '../components/HeroBanner';
 import { KittenCard } from '../components/KittenCard';
 
@@ -12,6 +13,7 @@ import { KittenCard } from '../components/KittenCard';
 export function AvailableKittensPage() {
   const { cats, loading, error } = useCatData();
   const navigate = useNavigate();
+  usePageTitle('Available Kittens');
 
   if (loading) {
     return <div className="loading">Loading kittens...</div>;

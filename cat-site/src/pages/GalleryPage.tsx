@@ -1,5 +1,6 @@
 import { useState, useCallback } from 'react';
 import { useCatData } from '../hooks/useCatData';
+import { usePageTitle } from '../hooks/usePageTitle';
 import { HeroBanner } from '../components/HeroBanner';
 import { PhotoGrid } from '../components/PhotoGrid';
 import { LightboxModal } from '../components/LightboxModal';
@@ -13,6 +14,7 @@ import { LightboxModal } from '../components/LightboxModal';
  */
 export function GalleryPage() {
   const { siteConfig, loading, error } = useCatData();
+  usePageTitle('Gallery');
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
 
   const photos = siteConfig?.galleryImages ?? [];

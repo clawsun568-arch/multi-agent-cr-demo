@@ -1,4 +1,5 @@
 import { useCatData } from '../hooks/useCatData';
+import { usePageTitle } from '../hooks/usePageTitle';
 import { HeroBanner } from '../components/HeroBanner';
 
 /**
@@ -9,6 +10,7 @@ import { HeroBanner } from '../components/HeroBanner';
  */
 export function AboutPage() {
   const { siteConfig, loading, error } = useCatData();
+  usePageTitle('About Us');
 
   if (loading) {
     return <div className="loading">Loading about info...</div>;

@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { usePageTitle } from '../hooks/usePageTitle';
 
 /**
  * NotFoundPage — Shown when the URL doesn't match any defined route.
@@ -11,6 +12,7 @@ import { Link } from 'react-router-dom';
  * of a blank screen.
  */
 export function NotFoundPage() {
+  usePageTitle('Page Not Found');
   return (
     <div className="stub-page">
       <h1>Page Not Found</h1>

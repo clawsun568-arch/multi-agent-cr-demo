@@ -43,9 +43,6 @@ body {
 
 .layout-main {
   flex: 1;
-  max-width: var(--max-width);
-  margin: 0 auto;
-  padding: 2rem 1rem;
   width: 100%;
 }
 
@@ -354,8 +351,10 @@ body {
 .loading,
 .error {
   text-align: center;
-  padding: 4rem;
+  padding: 4rem 1rem;
   font-size: 1.2rem;
+  max-width: var(--max-width);
+  margin: 0 auto;
 }
 
 .error {

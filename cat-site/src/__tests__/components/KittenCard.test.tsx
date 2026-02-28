@@ -62,7 +62,7 @@ describe('KittenCard', () => {
     render(<KittenCard kitten={makeKitten()} onClick={() => {}} />);
     const card = screen.getByLabelText('View details for Pomelo, available');
     expect(card).toBeInTheDocument();
-    expect(card.tagName).toBe('BUTTON');
+    expect(card).toHaveAttribute('role', 'button');
   });
 
   it('includes image carousel with main photo and gallery', () => {
