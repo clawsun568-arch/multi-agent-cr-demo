@@ -561,6 +561,162 @@ body {
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
+/* ===== HERO CAROUSEL =====
+   Full-width image carousel at the top of the homepage.
+   Uses absolute positioning for slides with opacity transitions. */
+.hero-carousel {
+  position: relative;
+  width: 100%;
+  height: 400px;
+  overflow: hidden;
+  background: var(--color-text);
+}
+
+.hero-carousel-track {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.hero-slide {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 0.6s ease-in-out;
+}
+
+.hero-slide--active {
+  opacity: 1;
+}
+
+.hero-slide-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* Prev/Next arrow buttons */
+.hero-control {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(0, 0, 0, 0.4);
+  color: white;
+  border: none;
+  font-size: 2.5rem;
+  line-height: 1;
+  padding: 0.5rem 0.75rem;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: background 0.2s;
+  z-index: 2;
+}
+
+.hero-control:hover {
+  background: rgba(0, 0, 0, 0.7);
+}
+
+.hero-control--prev {
+  left: 1rem;
+}
+
+.hero-control--next {
+  right: 1rem;
+}
+
+/* Dot indicators */
+.hero-dots {
+  position: absolute;
+  bottom: 1.25rem;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 0.5rem;
+  z-index: 2;
+}
+
+.hero-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: 2px solid white;
+  background: transparent;
+  cursor: pointer;
+  padding: 0;
+  transition: background 0.2s;
+}
+
+.hero-dot--active {
+  background: white;
+}
+
+/* ===== INTRO SECTION =====
+   Centered text block for cattery name, tagline, and intro. */
+.intro-section {
+  text-align: center;
+  padding: 3rem 1.5rem;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.intro-name {
+  font-size: 2.5rem;
+  font-weight: 300;
+  color: var(--color-text);
+  margin-bottom: 0.5rem;
+}
+
+.intro-tagline {
+  font-size: 1.15rem;
+  color: var(--color-primary);
+  font-weight: 500;
+  margin-bottom: 1.5rem;
+}
+
+.intro-text {
+  font-size: 1.05rem;
+  color: var(--color-text-muted);
+  line-height: 1.8;
+}
+
+/* ===== FEATURED CATS =====
+   Section with heading, cat grid, and "View All" link. */
+.featured-cats {
+  padding: 2rem 1rem;
+  max-width: var(--max-width);
+  margin: 0 auto;
+}
+
+.featured-cats-title {
+  font-size: 1.75rem;
+  margin-bottom: 1.5rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid var(--color-border);
+}
+
+.featured-cats-footer {
+  text-align: center;
+  margin-top: 2rem;
+}
+
+.view-all-link {
+  display: inline-block;
+  padding: 0.75rem 2rem;
+  background: var(--color-primary);
+  color: white;
+  text-decoration: none;
+  border-radius: 30px;
+  font-weight: 600;
+  font-size: 1rem;
+  transition: background 0.2s, transform 0.2s;
+}
+
+.view-all-link:hover {
+  background: var(--color-primary-hover);
+  transform: translateY(-2px);
+}
+
 /* ===== RESPONSIVE ADJUSTMENTS ===== */
 
 /* Mobile: hamburger menu, single-column grid */
@@ -592,6 +748,28 @@ body {
 }
 
 @media (max-width: 600px) {
+  .hero-carousel {
+    height: 250px;
+  }
+
+  .hero-control {
+    font-size: 1.75rem;
+    padding: 0.25rem 0.5rem;
+  }
+
+  .hero-dot {
+    width: 10px;
+    height: 10px;
+  }
+
+  .intro-name {
+    font-size: 2rem;
+  }
+
+  .intro-section {
+    padding: 2rem 1rem;
+  }
+
   .cat-grid {
     grid-template-columns: 1fr;
   }

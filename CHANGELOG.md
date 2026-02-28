@@ -5,12 +5,32 @@ All notable changes to the Cat Website project.
 ## [Unreleased]
 
 ### Planned (v2 Roadmap)
-- PR 2: Homepage redesign with hero carousel, intro section, featured cats
 - PR 3: Our Cats page (Kings & Queens) + enhanced CatProfilePage + HeroBanner
 - PR 4: Available Kittens page with image carousels and sold/available status
 - PR 5: Gallery page with masonry grid and lightbox modal
 - PR 6: Contact page + About/Breed Info page + social media icons
 - PR 7: Real photos, responsive tuning, accessibility audit
+
+## [1.4.0] - 2026-02-27
+
+### Added — Homepage Redesign (PR 2)
+- **HeroCarousel** component — full-width image carousel with fade transitions, auto-advance (5s), prev/next arrows, dot indicators, hover-to-pause, and full accessibility (aria-label, aria-live, role="region")
+- **IntroSection** component — centered cattery name, tagline, and introductory paragraph
+- **FeaturedCats** component — grid of up to 3 featured cats (prioritizing owned), reusing CatCard, with "View All Cats" link to /our-cats
+- **SiteConfig** data model — new `siteConfig` object in cat-data.json with catteryName, tagline, introText, and heroImages
+- Updated `useCatData` hook to return `siteConfig` alongside `cats`
+- New CSS for hero carousel, intro section, and featured cats with responsive adjustments
+
+### Added — Unit Tests (26 new tests, 79 total, all passing)
+- `HeroCarousel.test.tsx` — 12 tests: image rendering, dot indicators, next/prev navigation, auto-advance, hover pause/resume, empty state, single image, accessibility attributes
+- `IntroSection.test.tsx` — 4 tests: heading, tagline, intro text, CSS classes
+- `FeaturedCats.test.tsx` — 6 tests: heading, cat cards, "View All" link, 3-cat limit, owned-first priority, click callback
+- `HomePage.test.tsx` — 7 tests (rewritten): loading state, hero carousel, intro section, featured cats, "View All" link, error handling, missing siteConfig fallback
+
+### Changed
+- **HomePage** completely rewritten — from header + 2 CatSections to HeroCarousel + IntroSection + FeaturedCats layout
+- **types.ts** — added `SiteConfig` and `HeroImage` interfaces
+- **cat-data.json** — added `siteConfig` object with cattery branding and 3 hero images
 
 ## [1.3.0] - 2026-02-26
 
