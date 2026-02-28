@@ -1,0 +1,161 @@
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { render, screen, waitFor } from '@testing-library/react';
+import { MemoryRouter } from 'react-router-dom';
+import { AvailableKittensPage } from '../../pages/AvailableKittensPage';
+
+const mockData = {
+  cats: [
+    {
+      id: 'kit_1',
+      name: 'Pomelo',
+      breed: 'British Longhair',
+      gender: 'Female',
+      status: 'owned',
+      role: 'kitten',
+      color: 'Black Golden Longhair',
+      available: true,
+      photoUrl: 'https://placecats.com/pomelo/300/200',
+      birthDate: '2025-12-01',
+      personality: 'Very smart and cuddly',
+      gallery: [
+        { url: 'https://placecats.com/pomelo/400/300', caption: 'Playing' },
+      ],
+    },
+    {
+      id: 'kit_2',
+      name: 'Mikan',
+      breed: 'British Shorthair',
+      gender: 'Female',
+      status: 'owned',
+      role: 'kitten',
+      color: 'Black Golden Shorthair',
+      available: false,
+      photoUrl: 'https://placecats.com/mikan/300/200',
+      birthDate: '2025-10-15',
+      personality: 'Gentle and sweet',
+    },
+    {
+      id: 'cat_1',
+      name: 'Taro',
+      breed: 'British Shorthair',
+      gender: 'Male',
+      status: 'owned',
+      role: 'king',
+      photoUrl: 'https://placecats.com/taro/300/200',
+      birthDate: '2021-08-20',
+    },
+  ],
+};
+
+describe('AvailableKittensPage', () => {
+  beforeEach(() => {
+    vi.stubGlobal(
+      'fetch',
+      vi.fn(() =>
+        Promise.resolve({
+          ok: true,
+          json: () => Promise.resolve(mockData),
+        })
+      )
+    );
+  });
+
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
+
+  it('shows loading state initially', () => {
+    render(
+      <MemoryRouter>
+        <AvailableKittensPage />
+      </MemoryRouter>
+    );
+    expect(screen.getByText('Loading kittens...')).toBeInTheDocument();
+  });
+
+  it('renders HeroBanner with "Available Kittens" title', async () => {
+    render(
+      <MemoryRouter>
+        <AvailableKittensPage />
+      </MemoryRouter>
+    );
+
+    await waitFor(() => {
+      expect(screen.getByRole('banner', { name: 'Available Kittens' })).toBeInTheDocument();
+    });
+  });
+
+  it('shows only kittens, not kings or queens', async () => {
+    render(
+      <MemoryRouter>
+        <AvailableKittensPage />
+      </MemoryRouter>
+    );
+
+    await waitFor(() => {
+      expect(screen.getByText('Pomelo')).toBeInTheDocument();
+    });
+
+    expect(screen.getByText('Mikan')).toBeInTheDocument();
+    // Taro is a king, should not appear
+    expect(screen.queryByText('Taro')).not.toBeInTheDocument();
+  });
+
+  it('shows Available and Sold badges correctly', async () => {
+    render(
+      <MemoryRouter>
+        <AvailableKittensPage />
+      </MemoryRouter>
+    );
+
+    await waitFor(() => {
+      expect(screen.getByText('Pomelo')).toBeInTheDocument();
+    });
+
+    expect(screen.getByText('Available')).toBeInTheDocument();
+    expect(screen.getByText('Sold')).toBeInTheDocument();
+  });
+
+  it('shows empty message when no kittens exist', async () => {
+    vi.stubGlobal(
+      'fetch',
+      vi.fn(() =>
+        Promise.resolve({
+          ok: true,
+          json: () => Promise.resolve({ cats: [mockData.cats[2]] }), // only the king
+        })
+      )
+    );
+
+    render(
+      <MemoryRouter>
+        <AvailableKittensPage />
+      </MemoryRouter>
+    );
+
+    await waitFor(() => {
+      expect(screen.getByText(/No kittens available/)).toBeInTheDocument();
+    });
+  });
+
+  it('shows error message when fetch fails', async () => {
+    vi.stubGlobal(
+      'fetch',
+      vi.fn(() =>
+        Promise.resolve({ ok: false, status: 500 })
+      )
+    );
+
+    render(
+      <MemoryRouter>
+        <AvailableKittensPage />
+      </MemoryRouter>
+    );
+
+    await waitFor(() => {
+      expect(
+        screen.getByText('Error: Failed to load cat data. Please try again.')
+      ).toBeInTheDocument();
+    });
+  });
+});

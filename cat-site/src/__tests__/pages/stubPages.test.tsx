@@ -6,8 +6,8 @@
  * We test that each page renders correctly so route navigation works.
  *
  * Remaining stub pages are tested in a single file because the tests
- * are simple and follow the same pattern. OurCatsPage was moved to
- * its own test file when it was fully implemented in PR 3.
+ * are simple and follow the same pattern. OurCatsPage (PR 3) and
+ * AvailableKittensPage (PR 4) were moved to dedicated test files.
  *
  * Note: These components don't use any React Router hooks, so they
  * don't technically need MemoryRouter. But we include it as a
@@ -17,7 +17,6 @@ import { describe, it, expect } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import { AboutPage } from '../../pages/AboutPage';
-import { AvailableKittensPage } from '../../pages/AvailableKittensPage';
 import { GalleryPage } from '../../pages/GalleryPage';
 import { ContactPage } from '../../pages/ContactPage';
 import { NotFoundPage } from '../../pages/NotFoundPage';
@@ -31,17 +30,6 @@ describe('Stub Pages', () => {
     );
     expect(
       screen.getByRole('heading', { name: 'About Us' })
-    ).toBeInTheDocument();
-  });
-
-  it('AvailableKittensPage renders heading "Available Kittens"', () => {
-    render(
-      <MemoryRouter>
-        <AvailableKittensPage />
-      </MemoryRouter>
-    );
-    expect(
-      screen.getByRole('heading', { name: 'Available Kittens' })
     ).toBeInTheDocument();
   });
 

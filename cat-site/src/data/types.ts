@@ -41,6 +41,7 @@ export interface Cat {
   // Role & appearance
   role?: 'king' | 'queen' | 'kitten';
   color?: string;          // Coat color (e.g. "Seal Point")
+  available?: boolean;     // For kittens: true = available, false = sold
 
   // Details
   personality?: string;    // Description of cat's personality

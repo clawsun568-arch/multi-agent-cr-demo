@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.6.0] - 2026-02-28
+
+### Added
+- **Available Kittens page** — fully implemented with kitten grid, Available/Sold badges, and per-kitten image carousels
+- **KittenCard component** — card with image carousel, name/gender, breed color, personality, and status badge
+- **ImageCarousel component** — reusable prev/next image slider with dot indicators
+- **Cat data model** — added `available` boolean field for kitten availability status
+- **New sample kittens** — added Pomelo, Yuzu, and Mikan with gallery photos
+- Unit tests for ImageCarousel, KittenCard, and AvailableKittensPage
+
+### Changed
+- Removed AvailableKittensPage from stub page tests (moved to dedicated test file)
+
 ## [1.5.0] - 2026-02-27
 
 ### Added
