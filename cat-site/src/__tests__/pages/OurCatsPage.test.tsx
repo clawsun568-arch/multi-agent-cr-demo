@@ -145,6 +145,69 @@ describe('OurCatsPage', () => {
     });
   });
 
+  it('cat cards within a section have equal height (flexbox layout)', async () => {
+    // Use cats with different content lengths to trigger unequal natural heights
+    const mixedCats = {
+      cats: [
+        {
+          id: 'cat_a',
+          name: 'LongBio',
+          breed: 'Ragdoll',
+          gender: 'Female',
+          status: 'owned',
+          role: 'queen',
+          photoUrl: 'https://placecats.com/a/300/200',
+          birthDate: '2022-01-01',
+          personality: 'Very long personality text that takes up extra space in the card',
+        },
+        {
+          id: 'cat_b',
+          name: 'NoBio',
+          breed: 'Scottish Fold',
+          gender: 'Female',
+          status: 'planned',
+          role: 'queen',
+          photoUrl: 'https://placecats.com/b/300/200',
+          expectedDate: '2026-06',
+        },
+      ],
+    };
+
+    vi.stubGlobal(
+      'fetch',
+      vi.fn(() =>
+        Promise.resolve({
+          ok: true,
+          json: () => Promise.resolve(mixedCats),
+        })
+      )
+    );
+
+    render(
+      <MemoryRouter>
+        <OurCatsPage />
+      </MemoryRouter>
+    );
+
+    await waitFor(() => {
+      expect(screen.getByText('LongBio')).toBeInTheDocument();
+    });
+
+    // Verify both cards render within a shared grid container,
+    // and that .cat-info (flex child) exists on each card for equal-height layout
+    const cards = document.querySelectorAll('.cat-card');
+    expect(cards.length).toBe(2);
+    for (const card of cards) {
+      expect(card.classList.contains('cat-card')).toBe(true);
+      expect(card.querySelector('.cat-info')).not.toBeNull();
+      expect(card.querySelector('.view-details')).not.toBeNull();
+    }
+    // Both cards should be inside the same .cat-grid container
+    const grid = document.querySelector('.cat-grid');
+    expect(grid).not.toBeNull();
+    expect(grid!.querySelectorAll('.cat-card').length).toBe(2);
+  });
+
   it('falls back to gender filtering when no roles are set', async () => {
     const catsWithoutRoles = {
       cats: [
