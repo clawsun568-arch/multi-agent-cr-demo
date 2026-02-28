@@ -10,12 +10,35 @@ export interface HeroImage {
   alt: string;
 }
 
+export interface ContactInfo {
+  email?: string;
+  instagram?: string;
+  facebook?: string;
+  wechat?: string;
+  phone?: string;
+  note?: string;
+}
+
+export interface BreedInfo {
+  breedName: string;
+  description: string;
+  traits: string[];
+  photoUrl?: string;
+}
+
+export interface AboutInfo {
+  philosophy: string;
+  breeds: BreedInfo[];
+}
+
 export interface SiteConfig {
   catteryName: string;
   tagline: string;
   introText: string;
   heroImages: HeroImage[];
   galleryImages?: Photo[];
+  contact?: ContactInfo;
+  about?: AboutInfo;
 }
 
 export interface Photo {

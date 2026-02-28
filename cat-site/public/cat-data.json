@@ -21,7 +21,32 @@
       { "url": "https://placecats.com/millie/600/800", "caption": "Playtime with the crew" },
       { "url": "https://placecats.com/neo/700/500", "caption": "Cozy blanket moments" },
       { "url": "https://placecats.com/poppy/800/600", "caption": "Our cattery family" }
-    ]
+    ],
+    "contact": {
+      "email": "hello@mycattery.com",
+      "instagram": "@mycattery",
+      "facebook": "mycattery",
+      "wechat": "MyCattery_Official",
+      "phone": "+1 (555) 123-4567",
+      "note": "We prefer inquiries via email or Instagram DM. Please include your name, location, and which kitten you're interested in. We typically respond within 24 hours."
+    },
+    "about": {
+      "philosophy": "At My Cattery, we believe every kitten deserves the best start in life. Our cats are raised in our home as part of the family — never in cages. We prioritize health, temperament, and socialization above all else. Every kitten leaves with full health records, a starter kit, and a lifetime of support from us.",
+      "breeds": [
+        {
+          "breedName": "British Shorthair",
+          "description": "The British Shorthair is one of the oldest and most beloved cat breeds, known for their round faces, dense plush coats, and calm, easygoing nature. They are the teddy bears of the cat world — sturdy, affectionate, and wonderfully low-maintenance companions.",
+          "traits": ["Calm and gentle temperament", "Great with children and other pets", "Dense, plush coat in many colors", "Independent but affectionate", "Robust health and long lifespan"],
+          "photoUrl": "https://placecats.com/bella/800/500"
+        },
+        {
+          "breedName": "Ragdoll",
+          "description": "Ragdolls are large, gentle cats famous for going limp when picked up — hence the name. They are incredibly social, often following their owners from room to room like loyal puppies. With their striking blue eyes and silky semi-long coats, they are as beautiful as they are affectionate.",
+          "traits": ["Extremely affectionate and docile", "Dog-like loyalty and companionship", "Stunning blue eyes and pointed coloring", "Semi-long silky coat", "Excellent lap cats"],
+          "photoUrl": "https://placecats.com/millie/800/500"
+        }
+      ]
+    }
   },
   "cats": [
     {

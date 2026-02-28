@@ -1,22 +1,22 @@
 import { Link } from 'react-router-dom';
+import { useCatData } from '../hooks/useCatData';
+import { SocialIcons } from './SocialIcons';
 
 /**
  * Footer — Shown at the bottom of every page.
  *
  * CONTAINS:
  * - Quick links to all main pages (mirrors the NavBar links)
- * - Placeholder for social media icons (will be added in PR 6)
+ * - Social media icon links (via SocialIcons component)
  * - Copyright notice with dynamically computed year
  * - "Built with" credit line
- *
- * This is a "presentational" component — it has no state and no data
- * fetching. It just renders static content and navigation links.
  *
  * ACCESSIBILITY:
  * - <footer> has role="contentinfo" (the default landmark role for footer)
  * - The quick links section is wrapped in a <nav> with aria-label
  */
 export function Footer() {
+  const { siteConfig } = useCatData();
   // Compute the current year dynamically so the copyright stays up to date.
   const currentYear = new Date().getFullYear();
 
@@ -45,9 +45,13 @@ export function Footer() {
         </ul>
       </nav>
 
-      {/* Social media placeholder — SocialIcons component will go here in PR 6 */}
+      {/* Social media links */}
       <div className="footer-social">
-        <p>Follow us on social media</p>
+        {siteConfig?.contact ? (
+          <SocialIcons contact={siteConfig.contact} size="small" />
+        ) : (
+          <p>Follow us on social media</p>
+        )}
       </div>
 
       {/* Copyright notice */}
