@@ -14,7 +14,7 @@ All notable changes to this project will be documented in this file.
 
 ### Added
 - **Cat management CLI** — `npm run cats` interactive script for listing, adding, editing, and removing cats from cat-data.json
-- **Content management proposal** — Cloudinary for image hosting + CLI tool for JSON editing (see PR description)
+- **Content management CLI** — `npm run cats` interactive tool for managing cat-data.json
 
 ### Removed
 - All placeholder cat data (Mochi, Sakura, Taro, Kenzo, Pomelo, Yuzu, Mikan)

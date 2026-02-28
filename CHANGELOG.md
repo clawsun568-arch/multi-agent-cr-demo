@@ -10,7 +10,7 @@ All notable changes to the Cat Website project.
 - All hero banners and gallery now use real cat photos
 - CatCard and KittenCard accept local `/images/` paths (removed `startsWith('http')` check)
 - Added `npm run cats` CLI tool for managing cat-data.json
-- Proposed Cloudinary + CLI workflow for future content management
+- Added `npm run cats` CLI tool for managing cat-data.json
 
 ## [1.4.0] - 2026-02-27
 

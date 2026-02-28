@@ -103,7 +103,7 @@ async function addCat(data: CatData): Promise<void> {
     : undefined) as Cat['role'];
 
   const color = (await ask('  Color: ')).trim() || undefined;
-  const photoUrl = (await ask('  Photo URL (local path or Cloudinary URL): ')).trim() || '';
+  const photoUrl = (await ask('  Photo URL (local path e.g. /images/name.jpg): ')).trim() || '';
   const personality = (await ask('  Personality: ')).trim() || undefined;
 
   const now = new Date().toISOString();
