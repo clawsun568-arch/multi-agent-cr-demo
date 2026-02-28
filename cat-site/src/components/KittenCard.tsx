@@ -27,12 +27,21 @@ export function KittenCard({ kitten, onClick }: KittenCardProps) {
     photos.push(...kitten.gallery);
   }
 
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      onClick();
+    }
+  };
+
   return (
-    <button
+    <div
       className="kitten-card"
       onClick={onClick}
+      onKeyDown={handleKeyDown}
+      role="button"
+      tabIndex={0}
       aria-label={`View details for ${kitten.name}, ${isAvailable ? 'available' : 'sold'}`}
-      type="button"
     >
       <div className="kitten-card-image">
         {photos.length > 0 ? (
@@ -66,6 +75,6 @@ export function KittenCard({ kitten, onClick }: KittenCardProps) {
 
         <span className="view-details">View Details →</span>
       </div>
-    </button>
+    </div>
   );
 }

@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.9.0] - 2026-02-28
+
+### Fixed
+- **KittenCard button nesting** — replaced outer `<button>` with `<div role="button">` to fix `validateDOMNesting` error (carousel buttons inside card button)
+- **Hardcoded contact email** — CatProfilePage CTA now uses email from siteConfig instead of `contact@example.com`
+- **Layout padding** — removed `max-width` and `padding` from `layout-main` so hero banners render truly full-width; each page handles its own content width
+
+### Added
+- **Dynamic page titles** — browser tab now shows page-specific titles (e.g. "About Us | My Cattery", "Pomelo | My Cattery")
+- **Scroll to top on navigation** — pages now scroll to the top when navigating between routes
+- **usePageTitle hook** — reusable hook for setting `document.title` per page
+- **ScrollToTop component** — scrolls window to top on route change
+
 ## [1.8.0] - 2026-02-28
 
 ### Added

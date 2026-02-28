@@ -1,4 +1,5 @@
 import { useCatData } from '../hooks/useCatData';
+import { usePageTitle } from '../hooks/usePageTitle';
 import { HeroBanner } from '../components/HeroBanner';
 import { SocialIcons } from '../components/SocialIcons';
 
@@ -11,6 +12,7 @@ import { SocialIcons } from '../components/SocialIcons';
  */
 export function ContactPage() {
   const { siteConfig, loading, error } = useCatData();
+  usePageTitle('Contact Us');
 
   if (loading) {
     return <div className="loading">Loading contact info...</div>;
