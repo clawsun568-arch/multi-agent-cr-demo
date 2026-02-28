@@ -7,7 +7,8 @@ import { CatSection } from '../components/CatSection';
  * OurCatsPage — Displays all breeding cats split into Kings (males) and Queens (females).
  *
  * Uses the `role` field on each cat to determine which section it belongs to.
- * Falls back to `gender` filtering if no cats have a `role` set (backward compat).
+ * For cats without a `role`, falls back to `gender` (Male → king, Female → queen).
+ * This per-cat fallback handles partially migrated datasets correctly.
  */
 export function OurCatsPage() {
   const { cats, loading, error } = useCatData();
@@ -21,16 +22,9 @@ export function OurCatsPage() {
     return <div className="error">Error: {error}</div>;
   }
 
-  // Check if any cats have the role field set
-  const hasRoles = cats.some(c => c.role);
-
-  const kings = hasRoles
-    ? cats.filter(c => c.role === 'king')
-    : cats.filter(c => c.gender === 'Male');
-
-  const queens = hasRoles
-    ? cats.filter(c => c.role === 'queen')
-    : cats.filter(c => c.gender === 'Female');
+  // Per-cat fallback: use role if set, otherwise fall back to gender
+  const kings = cats.filter(c => c.role === 'king' || (!c.role && c.gender === 'Male'));
+  const queens = cats.filter(c => c.role === 'queen' || (!c.role && c.gender === 'Female'));
 
   const handleCatClick = (catId: string) => {
     navigate(`/our-cats/${catId}`);

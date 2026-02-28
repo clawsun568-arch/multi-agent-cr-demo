@@ -208,6 +208,81 @@ describe('OurCatsPage', () => {
     expect(grid!.querySelectorAll('.cat-card').length).toBe(2);
   });
 
+  it('includes cats without role via gender fallback in partially-migrated data', async () => {
+    const partiallyMigrated = {
+      cats: [
+        {
+          id: 'cat_1',
+          name: 'Taro',
+          breed: 'British Shorthair',
+          gender: 'Male',
+          status: 'owned',
+          role: 'king',
+          photoUrl: 'https://placecats.com/taro/300/200',
+          birthDate: '2021-08-20',
+        },
+        {
+          id: 'cat_2',
+          name: 'OldMale',
+          breed: 'Ragdoll',
+          gender: 'Male',
+          status: 'owned',
+          photoUrl: 'https://placecats.com/old/300/200',
+          birthDate: '2020-05-01',
+          // no role field — should still appear in Kings via gender fallback
+        },
+        {
+          id: 'cat_3',
+          name: 'Mochi',
+          breed: 'Ragdoll',
+          gender: 'Female',
+          status: 'owned',
+          role: 'queen',
+          photoUrl: 'https://placecats.com/mochi/300/200',
+          birthDate: '2022-03-15',
+        },
+        {
+          id: 'cat_4',
+          name: 'OldFemale',
+          breed: 'Scottish Fold',
+          gender: 'Female',
+          status: 'owned',
+          photoUrl: 'https://placecats.com/oldf/300/200',
+          birthDate: '2020-01-01',
+          // no role field — should still appear in Queens via gender fallback
+        },
+      ],
+    };
+
+    vi.stubGlobal(
+      'fetch',
+      vi.fn(() =>
+        Promise.resolve({
+          ok: true,
+          json: () => Promise.resolve(partiallyMigrated),
+        })
+      )
+    );
+
+    render(
+      <MemoryRouter>
+        <OurCatsPage />
+      </MemoryRouter>
+    );
+
+    await waitFor(() => {
+      expect(screen.getByText('Taro')).toBeInTheDocument();
+    });
+
+    // Both males should appear in Kings (one with role, one via gender fallback)
+    expect(screen.getByText('Taro')).toBeInTheDocument();
+    expect(screen.getByText('OldMale')).toBeInTheDocument();
+
+    // Both females should appear in Queens
+    expect(screen.getByText('Mochi')).toBeInTheDocument();
+    expect(screen.getByText('OldFemale')).toBeInTheDocument();
+  });
+
   it('falls back to gender filtering when no roles are set', async () => {
     const catsWithoutRoles = {
       cats: [
