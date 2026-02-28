@@ -1,4 +1,14 @@
 {
+  "siteConfig": {
+    "catteryName": "My Cattery",
+    "tagline": "Raising beautiful, healthy cats with love",
+    "introText": "Welcome to My Cattery, where we raise happy, healthy cats in a loving home environment. Each of our cats is treated as family, with top-quality care, regular veterinary checkups, and plenty of socialization. We are passionate about the breeds we work with and strive to produce kittens with wonderful temperaments.",
+    "heroImages": [
+      { "url": "https://placecats.com/bella/1200/500", "alt": "Beautiful cat relaxing in a sunny room" },
+      { "url": "https://placecats.com/millie/1200/500", "alt": "Playful kitten exploring the garden" },
+      { "url": "https://placecats.com/neo/1200/500", "alt": "Elegant cat posing on a cozy blanket" }
+    ]
+  },
   "cats": [
     {
       "id": "cat_001",

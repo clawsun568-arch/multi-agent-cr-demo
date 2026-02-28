@@ -5,6 +5,18 @@
 
 export type CatStatus = 'owned' | 'planned';
 
+export interface HeroImage {
+  url: string;
+  alt: string;
+}
+
+export interface SiteConfig {
+  catteryName: string;
+  tagline: string;
+  introText: string;
+  heroImages: HeroImage[];
+}
+
 export interface Photo {
   url: string;
   caption?: string;
