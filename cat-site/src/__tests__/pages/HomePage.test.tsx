@@ -1,31 +1,32 @@
 /**
- * Tests for the HomePage component.
+ * Tests for the HomePage component (PR 2 — redesigned layout).
  *
- * HomePage fetches cat data via useCatData(), splits cats into
- * "owned" and "planned" groups, and renders them in CatSection
- * components. Clicking a cat card navigates to /our-cats/:id.
+ * HomePage now renders:
+ * 1. HeroCarousel — image slideshow from siteConfig.heroImages
+ * 2. IntroSection — cattery name, tagline, intro text
+ * 3. FeaturedCats — grid of up to 3 cats with "View All" link
  *
  * We test:
  * - Shows loading state while data is being fetched
- * - Renders cat sections after data loads
+ * - Renders hero carousel, intro section, and featured cats after data loads
  * - Shows error message when fetch fails
- *
- * KEY TESTING PATTERN: Mocking fetch()
- * HomePage calls useCatData(), which calls fetch('/cat-data.json').
- * In tests, we mock `fetch` using vi.stubGlobal() to return fake data
- * without making real HTTP requests. This makes tests fast, reliable,
- * and independent of the actual cat-data.json file.
- *
- * We also need to wrap in MemoryRouter because HomePage uses
- * useNavigate() from React Router.
+ * - Handles missing siteConfig gracefully
  */
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { render, screen, waitFor } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import { HomePage } from '../../pages/HomePage';
 
-// Test cat data that our mock fetch will return
-const mockCatData = {
+const mockData = {
+  siteConfig: {
+    catteryName: 'My Cattery',
+    tagline: 'Raising beautiful cats with love',
+    introText: 'Welcome to our wonderful cattery.',
+    heroImages: [
+      { url: 'https://placecats.com/bella/1200/500', alt: 'Cat one' },
+      { url: 'https://placecats.com/millie/1200/500', alt: 'Cat two' },
+    ],
+  },
   cats: [
     {
       id: 'cat_1',
@@ -39,7 +40,7 @@ const mockCatData = {
     {
       id: 'cat_2',
       name: 'Sakura',
-      breed: 'Ragdoll',
+      breed: 'Scottish Fold',
       gender: 'Female',
       status: 'planned',
       photoUrl: 'https://placecats.com/sakura/300/200',
@@ -50,21 +51,18 @@ const mockCatData = {
 
 describe('HomePage', () => {
   beforeEach(() => {
-    // Mock fetch to return our test data.
-    // vi.stubGlobal replaces the global `fetch` function with our mock.
     vi.stubGlobal(
       'fetch',
       vi.fn(() =>
         Promise.resolve({
           ok: true,
-          json: () => Promise.resolve(mockCatData),
+          json: () => Promise.resolve(mockData),
         })
       )
     );
   });
 
   afterEach(() => {
-    // Restore the original fetch after each test
     vi.restoreAllMocks();
   });
 
@@ -75,38 +73,71 @@ describe('HomePage', () => {
       </MemoryRouter>
     );
 
-    // The loading message should appear before data loads
     expect(screen.getByText('Loading cats...')).toBeInTheDocument();
   });
 
-  it('renders cat sections after data loads', async () => {
+  it('renders hero carousel after data loads', async () => {
     render(
       <MemoryRouter>
         <HomePage />
       </MemoryRouter>
     );
 
-    // waitFor retries the assertion until it passes (or times out).
-    // This is needed because the data fetching is asynchronous —
-    // the component starts in a loading state and re-renders once
-    // the mock fetch resolves.
     await waitFor(() => {
-      // Section headings should appear
+      expect(screen.getByRole('region', { name: 'Hero image carousel' })).toBeInTheDocument();
+    });
+
+    expect(screen.getByAltText('Cat one')).toBeInTheDocument();
+    expect(screen.getByAltText('Cat two')).toBeInTheDocument();
+  });
+
+  it('renders intro section with cattery info', async () => {
+    render(
+      <MemoryRouter>
+        <HomePage />
+      </MemoryRouter>
+    );
+
+    await waitFor(() => {
       expect(
-        screen.getByRole('heading', { name: 'Our Cats' })
-      ).toBeInTheDocument();
-      expect(
-        screen.getByRole('heading', { name: 'Future Cats' })
+        screen.getByRole('heading', { name: 'My Cattery' })
       ).toBeInTheDocument();
     });
 
-    // Cat names should appear in their respective sections
+    expect(screen.getByText('Raising beautiful cats with love')).toBeInTheDocument();
+    expect(screen.getByText('Welcome to our wonderful cattery.')).toBeInTheDocument();
+  });
+
+  it('renders featured cats section', async () => {
+    render(
+      <MemoryRouter>
+        <HomePage />
+      </MemoryRouter>
+    );
+
+    await waitFor(() => {
+      expect(
+        screen.getByRole('heading', { name: 'Meet Our Cats' })
+      ).toBeInTheDocument();
+    });
+
     expect(screen.getByText('Mochi')).toBeInTheDocument();
     expect(screen.getByText('Sakura')).toBeInTheDocument();
   });
 
+  it('shows "View All Cats" link', async () => {
+    render(
+      <MemoryRouter>
+        <HomePage />
+      </MemoryRouter>
+    );
+
+    await waitFor(() => {
+      expect(screen.getByRole('link', { name: /View All Cats/i })).toBeInTheDocument();
+    });
+  });
+
   it('shows error message when fetch fails', async () => {
-    // Override the mock to simulate a failed fetch
     vi.stubGlobal(
       'fetch',
       vi.fn(() =>
@@ -130,7 +161,17 @@ describe('HomePage', () => {
     });
   });
 
-  it('renders the welcome header', async () => {
+  it('renders featured cats even without siteConfig', async () => {
+    vi.stubGlobal(
+      'fetch',
+      vi.fn(() =>
+        Promise.resolve({
+          ok: true,
+          json: () => Promise.resolve({ cats: mockData.cats }),
+        })
+      )
+    );
+
     render(
       <MemoryRouter>
         <HomePage />
@@ -138,9 +179,10 @@ describe('HomePage', () => {
     );
 
     await waitFor(() => {
-      expect(
-        screen.getByRole('heading', { name: 'Welcome to My Cattery' })
-      ).toBeInTheDocument();
+      expect(screen.getByText('Mochi')).toBeInTheDocument();
     });
+
+    // Hero carousel should not be present without siteConfig
+    expect(screen.queryByRole('region', { name: 'Hero image carousel' })).not.toBeInTheDocument();
   });
 });

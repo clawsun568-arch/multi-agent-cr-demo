@@ -5,6 +5,18 @@
 
 export type CatStatus = 'owned' | 'planned';
 
+export interface HeroImage {
+  url: string;
+  alt: string;
+}
+
+export interface SiteConfig {
+  catteryName: string;
+  tagline: string;
+  introText: string;
+  heroImages: HeroImage[];
+}
+
 export interface Photo {
   url: string;
   caption?: string;
@@ -26,6 +38,10 @@ export interface Cat {
   photoUrl: string;        // Main/hero photo
   gallery?: Photo[];       // Additional photos for profile page
   
+  // Role & appearance
+  role?: 'king' | 'queen' | 'kitten';
+  color?: string;          // Coat color (e.g. "Seal Point")
+
   // Details
   personality?: string;    // Description of cat's personality
   
