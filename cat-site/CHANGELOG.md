@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.7.0] - 2026-02-28
+
+### Added
+- **Gallery page** — fully implemented with masonry-style photo grid and lightbox modal
+- **PhotoGrid component** — responsive CSS columns layout with captions and click-to-enlarge
+- **LightboxModal component** — full-screen image viewer with prev/next navigation, keyboard support (Arrow keys, Escape), and overlay click to close
+- **Gallery images** — added 12 gallery photos to site config data
+- Unit tests for PhotoGrid, LightboxModal, and GalleryPage
+
+### Changed
+- Removed GalleryPage from stub page tests (moved to dedicated test file)
+
 ## [1.6.0] - 2026-02-28
 
 ### Added
