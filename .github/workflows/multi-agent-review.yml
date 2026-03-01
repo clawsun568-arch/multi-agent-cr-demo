@@ -7,61 +7,69 @@ on:
     types: [submitted]
 
 jobs:
-  agent-review:
+  review-check:
     runs-on: ubuntu-latest
-    name: Agent Code Review
+    name: Review Gate
     steps:
-      - name: Checkout PR
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
       - name: Check Required Reviews
         id: check-reviews
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           echo "Checking PR review requirements..."
-          echo "Required: 1 agent + 1 human approval"
-          
+          echo "Required: 1 AI agent review + 1 human approval"
+
           PR_NUMBER=${{ github.event.pull_request.number }}
           REPO=${{ github.repository }}
-          
-          # Get reviews
-          reviews=$(gh api repos/$REPO/pulls/$PR_NUMBER/reviews --jq '.[] | {state: .state, user: .user.login}')
-          
-          agent_approved=$(echo "$reviews" | grep -c "APPROVED" || true)
-          human_approved=$(echo "$reviews" | grep -v "github-actions" | grep -c "APPROVED" || true)
-          
-          echo "Agent approvals: $agent_approved"
+
+          # Check for AI agent review comments (Claude or OpenAI)
+          COMMENTS=$(gh api "repos/$REPO/issues/$PR_NUMBER/comments" --jq '.[].body')
+
+          claude_reviewed=false
+          openai_reviewed=false
+
+          if echo "$COMMENTS" | grep -q "claude-code-action\|Claude Code Review\|anthropics/claude-code-action"; then
+            claude_reviewed=true
+            echo "✅ Claude review found"
+          fi
+
+          if echo "$COMMENTS" | grep -q "OpenAI GPT Code Review\|Automated review by GPT"; then
+            openai_reviewed=true
+            echo "✅ OpenAI review found"
+          fi
+
+          if [ "$claude_reviewed" = true ] || [ "$openai_reviewed" = true ]; then
+            agent_review="done"
+            echo "✅ At least one AI agent has reviewed"
+          else
+            agent_review="pending"
+            echo "⏳ No AI agent reviews yet"
+          fi
+
+          # Check for human approvals via PR reviews API
+          human_approved=$(gh api "repos/$REPO/pulls/$PR_NUMBER/reviews" \
+            --jq '[.[] | select(.state == "APPROVED") | select(.user.type != "Bot")] | length')
+
           echo "Human approvals: $human_approved"
-          
-          if [ "$agent_approved" -ge 1 ] && [ "$human_approved" -ge 1 ]; then
+
+          if [ "$agent_review" = "done" ] && [ "$human_approved" -ge 1 ]; then
             echo "✅ All required reviews complete"
             echo "status=approved" >> $GITHUB_OUTPUT
           else
             echo "⏳ Waiting for required reviews"
             echo "status=pending" >> $GITHUB_OUTPUT
           fi
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Request Agent Review
-        if: steps.check-reviews.outputs.status == 'pending'
-        run: |
-          echo "🤖 Requesting agent code review..."
-          echo "This PR requires approval from:"
-          echo "  - At least 1 AI agent (Kimi/Codex/Sonnet)"
-          echo "  - At least 1 human reviewer"
 
   validate-structure:
     runs-on: ubuntu-latest
     name: Validate Project Structure
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Check required files exist
         run: |
           echo "Validating project structure..."
           test -f README.md || (echo "❌ README.md missing" && exit 1)
-          test -f package.json || (echo "❌ package.json missing" && exit 1)
-          test -d src || (echo "❌ src/ directory missing" && exit 1)
+          test -f cat-site/package.json || (echo "❌ cat-site/package.json missing" && exit 1)
+          test -d cat-site/src || (echo "❌ cat-site/src/ directory missing" && exit 1)
           echo "✅ Project structure valid"

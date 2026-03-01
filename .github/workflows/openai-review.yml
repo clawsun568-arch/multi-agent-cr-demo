@@ -1,0 +1,96 @@
+name: OpenAI Code Review
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  openai-review:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Get PR diff
+        id: diff
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          PR_NUMBER=${{ github.event.pull_request.number }}
+          DIFF=$(gh pr diff "$PR_NUMBER" || echo "Failed to get diff")
+          # Save diff to file to avoid shell escaping issues
+          echo "$DIFF" > /tmp/pr_diff.txt
+
+      - name: Review with OpenAI
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: |
+          if [ -z "$OPENAI_API_KEY" ]; then
+            echo "::error::OPENAI_API_KEY secret is not set. Add it in Repository Settings > Secrets and variables > Actions."
+            exit 1
+          fi
+
+          DIFF=$(cat /tmp/pr_diff.txt)
+
+          # Truncate diff if too large (max ~100k chars for API)
+          if [ ${#DIFF} -gt 100000 ]; then
+            DIFF="${DIFF:0:100000}
+
+          ... (diff truncated due to size)"
+          fi
+
+          # Build the JSON payload
+          PAYLOAD=$(jq -n \
+            --arg diff "$DIFF" \
+            --arg title "${{ github.event.pull_request.title }}" \
+            '{
+              model: "gpt-4.1",
+              messages: [
+                {
+                  role: "system",
+                  content: "You are a senior code reviewer. Review the PR diff and provide concise, actionable feedback. Focus on: bugs, security vulnerabilities, performance issues, React/TypeScript best practices, and accessibility. If the code looks good, say so briefly. Format your review in markdown."
+                },
+                {
+                  role: "user",
+                  content: ("PR Title: " + $title + "\n\nDiff:\n```\n" + $diff + "\n```\n\nPlease review this PR.")
+                }
+              ],
+              max_tokens: 4096
+            }')
+
+          RESPONSE=$(curl -s https://api.openai.com/v1/chat/completions \
+            -H "Content-Type: application/json" \
+            -H "Authorization: Bearer $OPENAI_API_KEY" \
+            -d "$PAYLOAD")
+
+          # Extract the review text
+          REVIEW=$(echo "$RESPONSE" | jq -r '.choices[0].message.content // empty')
+
+          if [ -z "$REVIEW" ]; then
+            ERROR=$(echo "$RESPONSE" | jq -r '.error.message // "Unknown error"')
+            echo "::error::OpenAI API call failed: $ERROR"
+            exit 1
+          fi
+
+          echo "$REVIEW" > /tmp/review.md
+
+      - name: Post review comment
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          PR_NUMBER=${{ github.event.pull_request.number }}
+          REVIEW=$(cat /tmp/review.md)
+
+          COMMENT="## 🤖 OpenAI GPT Code Review
+
+          $REVIEW
+
+          ---
+          *Automated review by GPT-4.1*"
+
+          gh pr comment "$PR_NUMBER" --body "$COMMENT"
