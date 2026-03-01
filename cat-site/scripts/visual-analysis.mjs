@@ -105,8 +105,8 @@ async function takeScreenshots() {
       const url = `${BASE_URL}${route.path}`;
       console.log(`📸 ${viewport.name} — ${route.name} (${url})`);
 
-      // waitUntil: 'networkidle' waits for all network requests to finish
-      await page.goto(url, { waitUntil: 'networkidle' });
+      // waitUntil: 'load' waits for the page load event to fire
+      await page.goto(url, { waitUntil: 'load' });
       // Extra wait for React state updates and CSS transitions
       await page.waitForTimeout(1000);
 
@@ -200,7 +200,7 @@ async function analyzeWithGPT(screenshots) {
       // o4-mini supports vision via the chat completions API
       const response = await client.chat.completions.create({
         model: 'o4-mini',
-        max_tokens: 500,
+        max_completion_tokens: 500,
         messages: [
           {
             role: 'user',

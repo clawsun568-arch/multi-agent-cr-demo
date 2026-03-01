@@ -79,11 +79,10 @@ test.describe('Home Page', () => {
       const dot1 = page.locator(heroCarousel.dot(1));
       await expect(dot1).toHaveAttribute('aria-selected', 'true');
 
-      // The carousel auto-advances every 5 seconds. Wait 5.5s to give it buffer.
-      // After one auto-advance, slide 2 should be active.
-      await page.waitForTimeout(5500);
+      // The carousel auto-advances every 5 seconds. Use a longer assertion
+      // timeout instead of a fixed sleep — more reliable in slow CI environments.
       const dot2 = page.locator(heroCarousel.dot(2));
-      await expect(dot2).toHaveAttribute('aria-selected', 'true');
+      await expect(dot2).toHaveAttribute('aria-selected', 'true', { timeout: 7000 });
     });
   });
 
