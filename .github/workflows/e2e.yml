@@ -105,9 +105,9 @@ jobs:
         run: npm run preview &
 
       # Wait until the server is actually responding before running the script.
-      # wait-on polls the URL until it returns a 200 status.
       - name: Wait for server
-        run: npx --yes wait-on http://localhost:4173 --timeout 15000
+        run: until curl -sf http://localhost:4173 > /dev/null; do sleep 1; done
+        timeout-minutes: 1
 
       # Run the dual AI visual analysis script. It takes ~14 screenshots
       # and sends each to both Gemini Vision and GPT o4-mini Vision.
