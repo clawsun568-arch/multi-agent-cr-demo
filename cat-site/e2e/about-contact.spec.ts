@@ -24,6 +24,7 @@
  *   the same component in the footer (SocialIcons appears in both)
  */
 import { test, expect } from '@playwright/test';
+import { breedCount } from './helpers/test-data';
 
 test.describe('About Page', () => {
   test.beforeEach(async ({ page }) => {
@@ -45,8 +46,7 @@ test.describe('About Page', () => {
   test('displays breed cards', async ({ page }) => {
     await expect(page.locator('.about-breeds h2')).toHaveText('Our Breeds');
     const breedCards = page.locator('.breed-card');
-    // cat-data.json has 2 breeds: British Shorthair and Ragdoll
-    await expect(breedCards).toHaveCount(2);
+    await expect(breedCards).toHaveCount(breedCount);
   });
 
   test('breed cards have images', async ({ page }) => {

@@ -21,6 +21,7 @@
  */
 import { test, expect } from '@playwright/test';
 import { kittenCard, imageCarousel } from './helpers/selectors';
+import { kittenCount } from './helpers/test-data';
 
 test.describe('Kittens Page', () => {
   test.beforeEach(async ({ page }) => {
@@ -33,8 +34,7 @@ test.describe('Kittens Page', () => {
 
   test('displays kitten cards', async ({ page }) => {
     const cards = page.locator(kittenCard.card);
-    // 3 kittens in data: Pomelo, Yuzu, Mikan
-    await expect(cards).toHaveCount(3);
+    await expect(cards).toHaveCount(kittenCount);
   });
 
   test('kitten cards show name', async ({ page }) => {
