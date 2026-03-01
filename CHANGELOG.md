@@ -15,7 +15,7 @@ All notable changes to the Cat Website project.
 
 ### Added — Automated AI Code Review (PR 17)
 - **Claude review workflow** (`claude-review.yml`) — uses `anthropics/claude-code-action@v1` with Opus 4.6, triggers on PR open/sync/reopen and `@claude` mentions in comments
-- **OpenAI review workflow** (`openai-review.yml`) — gets PR diff, sends to OpenAI o3 for review, posts results as PR comment
+- **OpenAI review workflow** (`openai-review.yml`) — gets PR diff, sends to GPT-5.2 for review, posts results as PR comment
 - Replaces the previous Cloudboard cron-based polling approach with instant GitHub Actions triggers
 
 ### Changed
