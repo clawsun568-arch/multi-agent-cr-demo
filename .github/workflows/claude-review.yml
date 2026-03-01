@@ -18,13 +18,13 @@ jobs:
       contents: read
       pull-requests: write
       issues: write
+      id-token: write
     steps:
       - name: Claude Code Review
         uses: anthropics/claude-code-action@v1
         with:
           anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
-          model: claude-opus-4-6
-          direct_prompt: |
+          prompt: |
             Review this PR for:
             - Bugs and logic errors
             - Security vulnerabilities
@@ -33,5 +33,4 @@ jobs:
             - Accessibility (a11y) concerns
 
             Be concise. Focus on actionable feedback. If the code looks good, say so briefly.
-          max_turns: 3
-          timeout_minutes: 10
+          claude_args: --model claude-opus-4-6
