@@ -84,13 +84,12 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           PR_NUMBER=${{ github.event.pull_request.number }}
-          REVIEW=$(cat /tmp/review.md)
-
-          COMMENT="## 🤖 OpenAI GPT Code Review
-
-$REVIEW
-
----
-*Automated review by GPT-5.2*"
-
-          gh pr comment "$PR_NUMBER" --body "$COMMENT"
+          {
+            echo "## 🤖 OpenAI GPT Code Review"
+            echo ""
+            cat /tmp/review.md
+            echo ""
+            echo "---"
+            echo "*Automated review by GPT-5.2*"
+          } > /tmp/comment.md
+          gh pr comment "$PR_NUMBER" --body-file /tmp/comment.md
