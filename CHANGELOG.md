@@ -11,6 +11,19 @@ All notable changes to the Cat Website project.
 - PR 6: Contact page + About/Breed Info page + social media icons
 - PR 7: Real photos, responsive tuning, accessibility audit
 
+## [1.5.0] - 2026-02-28
+
+### Added — Automated AI Code Review (PR 17)
+- **Claude review workflow** (`claude-review.yml`) — uses `anthropics/claude-code-action@v1` with Opus 4.6, triggers on PR open/sync/reopen and `@claude` mentions in comments
+- **OpenAI review workflow** (`openai-review.yml`) — gets PR diff, sends to GPT-5.2 for review, posts results as PR comment
+- Replaces the previous Cloudboard cron-based polling approach with instant GitHub Actions triggers
+
+### Changed
+- **ci.yml** — replaced placeholder `python hello.py` with real `npm ci && npm run build && npm test` pipeline in `cat-site/`
+
+### Removed
+- **multi-agent-review.yml** — deprecated; the old OpenClaw-based review gate is replaced by the new automated Claude + OpenAI workflows
+
 ## [1.4.0] - 2026-02-27
 
 ### Added — Homepage Redesign (PR 2)
