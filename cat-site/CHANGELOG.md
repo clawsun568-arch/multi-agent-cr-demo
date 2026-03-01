@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.10.0] - 2026-02-28
+
+### Added
+- **Playwright E2E tests** — 79 test cases × 2 viewports (desktop + mobile) = 158 tests covering navigation, hero carousel, cat profiles, kittens, gallery lightbox, about/contact pages
+- **AI visual analysis script** — screenshots all routes at desktop + mobile, sends to Claude Vision for layout/image quality review
+- **GitHub Actions E2E workflow** — blocking E2E tests on every PR + advisory visual analysis that posts a PR comment
+- **Shared E2E selectors** — reusable selector constants for nav, carousel, lightbox, cards
+
+### Fixed
+- **CatProfilePage hook ordering** — moved `usePageTitle` before conditional returns to fix React error #310 on direct navigation to profile pages in production builds
+
 ## [1.9.0] - 2026-02-28
 
 ### Fixed

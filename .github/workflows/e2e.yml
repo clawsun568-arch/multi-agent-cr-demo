@@ -1,0 +1,134 @@
+# E2E Tests + Visual Analysis Workflow
+#
+# This workflow has two jobs:
+#
+# 1. e2e-tests (BLOCKING) — Runs all 158 Playwright E2E tests.
+#    If any test fails, the PR cannot be merged.
+#    Runs on: every push to main AND every pull request.
+#
+# 2. visual-analysis (ADVISORY) — Takes screenshots of every page,
+#    sends them to Gemini Vision AND GPT o4-mini Vision for dual AI layout
+#    analysis, and posts the report as a PR comment. Never blocks merge.
+#    Runs on: pull requests only, after e2e-tests passes.
+
+name: E2E Tests
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+# Permissions needed:
+# - contents: read  — to check out the code
+# - pull-requests: write — to post the visual analysis PR comment
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  # ─── Job 1: E2E Tests (blocking) ──────────────────────────────────
+  # Builds the site, starts a preview server, and runs all Playwright tests.
+  # If tests fail, uploads the HTML report as a downloadable artifact.
+  e2e-tests:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: cat-site
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: cat-site/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      # Install Chromium browser binary (needed by Playwright).
+      # --with-deps also installs OS-level dependencies (fonts, libs).
+      - name: Install Playwright Chromium
+        run: npx playwright install --with-deps chromium
+
+      - name: Build
+        run: npm run build
+
+      # Playwright auto-starts the preview server via webServer config
+      # in playwright.config.ts, then runs all test files in e2e/.
+      - name: Run E2E tests
+        run: npx playwright test
+
+      # On failure, upload the Playwright HTML report as a GitHub artifact.
+      # Developers can download it to see screenshots, traces, and error details.
+      - name: Upload test report
+        uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: playwright-report
+          path: cat-site/playwright-report/
+          retention-days: 14
+
+  # ─── Job 2: Visual Analysis (advisory, PR-only) ────────────────────
+  # Screenshots every page at desktop + mobile viewports, sends each to
+  # Gemini Vision AND GPT o4-mini Vision for dual AI layout/quality analysis,
+  # and posts the combined report as a PR comment. Uses continue-on-error
+  # so failures never block the PR.
+  visual-analysis:
+    runs-on: ubuntu-latest
+    needs: e2e-tests  # Only run after E2E tests pass
+    if: github.event_name == 'pull_request'  # Skip on push to main
+    defaults:
+      run:
+        working-directory: cat-site
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: cat-site/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright Chromium
+        run: npx playwright install --with-deps chromium
+
+      - name: Build
+        run: npm run build
+
+      # Start the preview server in the background (& = background process).
+      # The visual-analysis.mjs script connects to this server to take screenshots.
+      - name: Start preview server
+        run: npm run preview &
+
+      # Wait until the server is actually responding before running the script.
+      - name: Wait for server
+        run: until curl -sf http://localhost:4173 > /dev/null; do sleep 1; done
+        timeout-minutes: 1
+
+      # Run the dual AI visual analysis script. It takes ~14 screenshots
+      # and sends each to both Gemini Vision and GPT o4-mini Vision.
+      # Output: visual-report.md with both AIs' analyses side by side.
+      # continue-on-error: true — if an AI call fails (rate limit, API key
+      # missing, etc.), we don't fail the whole workflow.
+      - name: Run visual analysis
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: node scripts/visual-analysis.mjs
+        continue-on-error: true
+
+      # Post the markdown report as a PR comment using the GitHub CLI.
+      # Runs even if the previous step failed (if: always()), but only
+      # if the report file exists and is non-empty.
+      - name: Post PR comment
+        if: always() && hashFiles('cat-site/visual-report.md') != ''
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh pr comment ${{ github.event.pull_request.number }} \
+            --repo ${{ github.repository }} \
+            --body-file visual-report.md
