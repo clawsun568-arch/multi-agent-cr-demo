@@ -15,11 +15,12 @@
  * Key test patterns:
  * - beforeEach waits for the hero banner title to confirm data has loaded
  * - expect(cards.first()).toBeVisible() — auto-retrying wait for data
- * - page.goto('/our-cats/cat_001') — direct deep-link navigation
+ * - page.goto('/our-cats/:id') — direct deep-link navigation
  * - Conditional checks (gallery, parents) using if(isVisible) for optional sections
  */
 import { test, expect } from '@playwright/test';
 import { catCard } from './helpers/selectors';
+import { kingCount, queenCount, firstOwnedCat, firstPlannedCat } from './helpers/test-data';
 
 test.describe('Our Cats Page', () => {
   test.beforeEach(async ({ page }) => {
@@ -48,16 +49,14 @@ test.describe('Our Cats Page', () => {
     const cards = kingsSection.locator(catCard.card);
     // Wait for async data to load before counting
     await expect(cards.first()).toBeVisible();
-    // Taro (cat_003) and Kenzo (cat_004) are kings in the test data
-    expect(await cards.count()).toBeGreaterThanOrEqual(2);
+    expect(await cards.count()).toBe(kingCount);
   });
 
   test('Queens section has cat cards', async ({ page }) => {
     const queensSection = page.locator('section[aria-labelledby="queens-heading"]');
     const cards = queensSection.locator(catCard.card);
     await expect(cards.first()).toBeVisible();
-    // Mochi (cat_001) is a queen; Sakura (cat_002) is a planned queen
-    expect(await cards.count()).toBeGreaterThanOrEqual(1);
+    expect(await cards.count()).toBe(queenCount);
   });
 
   test('cat cards display name and breed', async ({ page }) => {
@@ -89,23 +88,22 @@ test.describe('Our Cats Page', () => {
 
 test.describe('Cat Profile Page', () => {
   test('displays cat profile details', async ({ page }) => {
-    // Navigate directly to Mochi's profile (cat_001)
-    await page.goto('/our-cats/cat_001');
-    await expect(page.locator('h1.cat-name')).toHaveText('Mochi');
-    await expect(page.locator('.cat-breed')).toHaveText('Ragdoll');
+    await page.goto(`/our-cats/${firstOwnedCat.id}`);
+    await expect(page.locator('h1.cat-name')).toHaveText(firstOwnedCat.name);
+    await expect(page.locator('.cat-breed')).toHaveText(firstOwnedCat.breed);
     await expect(page.locator('text=Gender:')).toBeVisible();
-    await expect(page.locator('text=Female')).toBeVisible();
+    await expect(page.locator(`text=${firstOwnedCat.gender}`)).toBeVisible();
   });
 
   test('displays personality section', async ({ page }) => {
-    await page.goto('/our-cats/cat_001');
+    await page.goto(`/our-cats/${firstOwnedCat.id}`);
     // Wait for profile to load before checking personality
     await expect(page.locator('h1.cat-name')).toBeVisible();
     await expect(page.locator('.personality-text')).toBeVisible();
   });
 
   test('displays photo gallery when available', async ({ page }) => {
-    await page.goto('/our-cats/cat_001');
+    await page.goto(`/our-cats/${firstOwnedCat.id}`);
     await expect(page.locator('h1.cat-name')).toBeVisible();
     // Gallery is optional — only some cats have additional photos
     const gallery = page.locator('.photo-gallery');
@@ -116,7 +114,7 @@ test.describe('Cat Profile Page', () => {
   });
 
   test('displays parent information when available', async ({ page }) => {
-    await page.goto('/our-cats/cat_001');
+    await page.goto(`/our-cats/${firstOwnedCat.id}`);
     await expect(page.locator('h1.cat-name')).toBeVisible();
     // Parents section is optional — only shown if father/mother data exists
     const parentsSection = page.locator('text=Parents');
@@ -126,7 +124,7 @@ test.describe('Cat Profile Page', () => {
   });
 
   test('back button returns to Our Cats page', async ({ page }) => {
-    await page.goto('/our-cats/cat_001');
+    await page.goto(`/our-cats/${firstOwnedCat.id}`);
     await expect(page.locator('h1.cat-name')).toBeVisible();
     // The back button is a <Link to="/our-cats"> with aria-label
     await page.click('[aria-label="Go back to cat list"]');
@@ -140,8 +138,7 @@ test.describe('Cat Profile Page', () => {
   });
 
   test('planned cat shows "Coming Soon" badge and CTA', async ({ page }) => {
-    // Sakura (cat_002) is a planned cat — not yet owned
-    await page.goto('/our-cats/cat_002');
+    await page.goto(`/our-cats/${firstPlannedCat.id}`);
     await expect(page.locator('.status-badge')).toHaveText('Coming Soon');
     // Planned cats show a "Contact Us for Updates" button
     await expect(page.locator('.contact-button')).toBeVisible();

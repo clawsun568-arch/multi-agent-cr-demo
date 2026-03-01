@@ -20,6 +20,7 @@
  */
 import { test, expect } from '@playwright/test';
 import { heroCarousel } from './helpers/selectors';
+import { heroImageCount } from './helpers/test-data';
 
 test.describe('Home Page', () => {
   test.beforeEach(async ({ page }) => {
@@ -59,9 +60,9 @@ test.describe('Home Page', () => {
     });
 
     test('dot indicators navigate to specific slides', async ({ page }) => {
-      // Click dot 3 directly (should jump to slide 3 without going through 2)
-      await page.click(heroCarousel.dot(3));
-      await expect(page.locator(heroCarousel.dot(3))).toHaveAttribute('aria-selected', 'true');
+      // Click last dot directly (should jump to last slide without going through others)
+      await page.click(heroCarousel.dot(heroImageCount));
+      await expect(page.locator(heroCarousel.dot(heroImageCount))).toHaveAttribute('aria-selected', 'true');
 
       // Jump back to slide 1
       await page.click(heroCarousel.dot(1));
@@ -70,8 +71,7 @@ test.describe('Home Page', () => {
 
     test('renders dot indicators for all slides', async ({ page }) => {
       const dots = page.locator(`${heroCarousel.dots} [role="tab"]`);
-      // cat-data.json has 3 hero images, so there should be 3 dots
-      await expect(dots).toHaveCount(3);
+      await expect(dots).toHaveCount(heroImageCount);
     });
 
     test('auto-rotates slides', async ({ page }) => {

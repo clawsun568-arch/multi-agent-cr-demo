@@ -5,7 +5,7 @@
  * full-screen lightbox modal for viewing photos.
  *
  * Photo Grid:
- * - Displays all 12 gallery images from siteConfig.galleryImages
+ * - Displays all gallery images from siteConfig.galleryImages
  * - Each item is a clickable button containing an <img>
  * - CSS columns create the masonry layout
  *
@@ -14,8 +14,8 @@
  * - Shows the photo full-screen with a dark overlay
  * - Navigation: prev/next buttons, arrow keys, dot clicking
  * - Closing: X button, Escape key, clicking the overlay background
- * - Counter shows position like "3 / 12"
- * - Wraps around (going prev from photo 1 → photo 12)
+ * - Counter shows position like "3 / N"
+ * - Wraps around (going prev from photo 1 → last photo)
  *
  * Key Playwright concepts:
  * - page.keyboard.press('Escape') — simulates a keyboard key press
@@ -25,6 +25,7 @@
  */
 import { test, expect } from '@playwright/test';
 import { lightbox, photoGrid } from './helpers/selectors';
+import { galleryImageCount } from './helpers/test-data';
 
 test.describe('Gallery Page', () => {
   test.beforeEach(async ({ page }) => {
@@ -38,8 +39,7 @@ test.describe('Gallery Page', () => {
   test('displays photo grid with images', async ({ page }) => {
     await expect(page.locator(photoGrid.grid)).toBeVisible();
     const items = page.locator(photoGrid.item);
-    // cat-data.json has 12 gallery images
-    await expect(items).toHaveCount(12);
+    await expect(items).toHaveCount(galleryImageCount);
   });
 
   test('photo grid items have images', async ({ page }) => {
@@ -60,7 +60,7 @@ test.describe('Gallery Page', () => {
       await page.locator(photoGrid.item).first().click();
       // Counter format is "currentIndex / totalCount"
       const counter = page.locator(lightbox.counter);
-      await expect(counter).toHaveText('1 / 12');
+      await expect(counter).toHaveText(`1 / ${galleryImageCount}`);
     });
 
     test('close button closes lightbox', async ({ page }) => {
@@ -74,29 +74,29 @@ test.describe('Gallery Page', () => {
 
     test('next button advances to next image', async ({ page }) => {
       await page.locator(photoGrid.item).first().click();
-      await expect(page.locator(lightbox.counter)).toHaveText('1 / 12');
+      await expect(page.locator(lightbox.counter)).toHaveText(`1 / ${galleryImageCount}`);
 
       await page.click(lightbox.nextBtn);
-      await expect(page.locator(lightbox.counter)).toHaveText('2 / 12');
+      await expect(page.locator(lightbox.counter)).toHaveText(`2 / ${galleryImageCount}`);
     });
 
     test('previous button goes to previous image', async ({ page }) => {
       await page.locator(photoGrid.item).first().click();
       // Go forward first, then back
       await page.click(lightbox.nextBtn);
-      await expect(page.locator(lightbox.counter)).toHaveText('2 / 12');
+      await expect(page.locator(lightbox.counter)).toHaveText(`2 / ${galleryImageCount}`);
 
       await page.click(lightbox.prevBtn);
-      await expect(page.locator(lightbox.counter)).toHaveText('1 / 12');
+      await expect(page.locator(lightbox.counter)).toHaveText(`1 / ${galleryImageCount}`);
     });
 
     test('wraps from first to last image using prev button', async ({ page }) => {
-      // When on photo 1 and clicking prev, it should wrap to photo 12
+      // When on photo 1 and clicking prev, it should wrap to the last photo
       await page.locator(photoGrid.item).first().click();
-      await expect(page.locator(lightbox.counter)).toHaveText('1 / 12');
+      await expect(page.locator(lightbox.counter)).toHaveText(`1 / ${galleryImageCount}`);
 
       await page.click(lightbox.prevBtn);
-      await expect(page.locator(lightbox.counter)).toHaveText('12 / 12');
+      await expect(page.locator(lightbox.counter)).toHaveText(`${galleryImageCount} / ${galleryImageCount}`);
     });
 
     test('Escape key closes lightbox', async ({ page }) => {
@@ -110,19 +110,19 @@ test.describe('Gallery Page', () => {
 
     test('ArrowRight key advances to next image', async ({ page }) => {
       await page.locator(photoGrid.item).first().click();
-      await expect(page.locator(lightbox.counter)).toHaveText('1 / 12');
+      await expect(page.locator(lightbox.counter)).toHaveText(`1 / ${galleryImageCount}`);
 
       await page.keyboard.press('ArrowRight');
-      await expect(page.locator(lightbox.counter)).toHaveText('2 / 12');
+      await expect(page.locator(lightbox.counter)).toHaveText(`2 / ${galleryImageCount}`);
     });
 
     test('ArrowLeft key goes to previous image', async ({ page }) => {
       await page.locator(photoGrid.item).first().click();
       await page.keyboard.press('ArrowRight');
-      await expect(page.locator(lightbox.counter)).toHaveText('2 / 12');
+      await expect(page.locator(lightbox.counter)).toHaveText(`2 / ${galleryImageCount}`);
 
       await page.keyboard.press('ArrowLeft');
-      await expect(page.locator(lightbox.counter)).toHaveText('1 / 12');
+      await expect(page.locator(lightbox.counter)).toHaveText(`1 / ${galleryImageCount}`);
     });
 
     test('clicking overlay closes lightbox', async ({ page }) => {
