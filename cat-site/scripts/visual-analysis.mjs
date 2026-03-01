@@ -1,10 +1,10 @@
 #!/usr/bin/env node
 
 /**
- * Visual Analysis Script — Dual AI Review (Claude + GPT)
+ * Visual Analysis Script — Dual AI Review (Gemini + GPT)
  *
  * This script does AI-powered visual testing of the cat cattery website
- * using BOTH Claude Sonnet Vision AND GPT-4o Vision for two independent
+ * using BOTH Gemini Pro Vision AND GPT o4-mini Vision for two independent
  * perspectives on layout/image quality.
  *
  * How it works:
@@ -14,31 +14,31 @@
  *    screenshot of each = 14 screenshots total.
  *
  * 2. AI ANALYSIS: Sends each screenshot to BOTH:
- *    - Claude Sonnet Vision (Anthropic API)
- *    - GPT-4o Vision (OpenAI API)
+ *    - Gemini Pro Vision (Google GenAI API)
+ *    - GPT o4-mini Vision (OpenAI API)
  *    Each AI independently reviews the screenshot for visual issues.
  *
  * 3. REPORT: Combines all AI responses into a markdown report file
- *    (visual-report.md) with both Claude and GPT analyses side by side
+ *    (visual-report.md) with both Gemini and GPT analyses side by side
  *    for each page. Posted as a PR comment in CI.
  *
  * This is an ADVISORY check — it never blocks PRs. The AIs might flag
  * false positives, so humans review the report before acting on it.
  *
  * Environment variables:
- *   ANTHROPIC_API_KEY — for Claude Vision (optional, skips if missing)
+ *   GEMINI_API_KEY    — for Gemini Vision (optional, skips if missing)
  *   OPENAI_API_KEY    — for GPT Vision (optional, skips if missing)
  *   BASE_URL          — site URL (default: http://localhost:4173)
  *
  * Usage:
  *   npm run build && npm run preview &
- *   ANTHROPIC_API_KEY=sk-... OPENAI_API_KEY=sk-... node scripts/visual-analysis.mjs
+ *   GEMINI_API_KEY=... OPENAI_API_KEY=sk-... node scripts/visual-analysis.mjs
  */
 
 // --- Imports ---
 
 import { chromium } from '@playwright/test';
-import Anthropic from '@anthropic-ai/sdk';
+import { GoogleGenAI } from '@google/genai';
 import OpenAI from 'openai';
 import { readFileSync, writeFileSync } from 'node:fs';
 import { join, dirname } from 'node:path';
@@ -130,54 +130,44 @@ async function takeScreenshots() {
   return screenshots;
 }
 
-// --- Step 2a: Claude Vision Analysis ---
+// --- Step 2a: Gemini Vision Analysis ---
 
 /**
- * Sends each screenshot to Claude Sonnet Vision API.
+ * Sends each screenshot to Gemini Pro Vision API.
  * Returns analysis text for each screenshot, or "Skipped" if no API key.
  */
-async function analyzeWithClaude(screenshots) {
-  if (!process.env.ANTHROPIC_API_KEY) {
-    console.warn('⚠️  ANTHROPIC_API_KEY not set — skipping Claude analysis');
-    return screenshots.map(() => '_Skipped: ANTHROPIC_API_KEY not set_');
+async function analyzeWithGemini(screenshots) {
+  if (!process.env.GEMINI_API_KEY) {
+    console.warn('⚠️  GEMINI_API_KEY not set — skipping Gemini analysis');
+    return screenshots.map(() => '_Skipped: GEMINI_API_KEY not set_');
   }
 
-  const client = new Anthropic();
+  const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
   const results = [];
 
   for (const screenshot of screenshots) {
-    console.log(`🔍 Claude: ${screenshot.viewport} — ${screenshot.route}...`);
+    console.log(`🔍 Gemini: ${screenshot.viewport} — ${screenshot.route}...`);
 
     const imageData = readFileSync(screenshot.path);
     const base64 = imageData.toString('base64');
 
     try {
-      const response = await client.messages.create({
-        model: 'claude-sonnet-4-20250514',
-        max_tokens: 500,
-        messages: [
+      const response = await ai.models.generateContent({
+        model: 'gemini-3.1-pro-preview',
+        contents: [
           {
-            role: 'user',
-            content: [
-              {
-                type: 'image',
-                source: { type: 'base64', media_type: 'image/png', data: base64 },
-              },
-              {
-                type: 'text',
-                text: `${VISION_PROMPT}\n\nPage: ${screenshot.route} | Viewport: ${screenshot.viewport}`,
-              },
-            ],
+            inlineData: { mimeType: 'image/png', data: base64 },
+          },
+          {
+            text: `${VISION_PROMPT}\n\nPage: ${screenshot.route} | Viewport: ${screenshot.viewport}`,
           },
         ],
       });
 
-      results.push(
-        response.content.filter(c => c.type === 'text').map(c => c.text).join('\n')
-      );
+      results.push(response.text);
     } catch (err) {
       const message = err instanceof Error ? err.message : String(err);
-      console.error(`❌ Claude failed on ${screenshot.filename}: ${message}`);
+      console.error(`❌ Gemini failed on ${screenshot.filename}: ${message}`);
       results.push(`_Error: ${message}_`);
     }
   }
@@ -188,7 +178,7 @@ async function analyzeWithClaude(screenshots) {
 // --- Step 2b: GPT Vision Analysis ---
 
 /**
- * Sends each screenshot to GPT-4o Vision API.
+ * Sends each screenshot to GPT o4-mini Vision API.
  * Returns analysis text for each screenshot, or "Skipped" if no API key.
  */
 async function analyzeWithGPT(screenshots) {
@@ -207,9 +197,9 @@ async function analyzeWithGPT(screenshots) {
     const base64 = imageData.toString('base64');
 
     try {
-      // GPT-4o supports vision via the chat completions API
+      // o4-mini supports vision via the chat completions API
       const response = await client.chat.completions.create({
-        model: 'gpt-4o',
+        model: 'o4-mini',
         max_tokens: 500,
         messages: [
           {
@@ -242,14 +232,14 @@ async function analyzeWithGPT(screenshots) {
 // --- Step 3: Generate Markdown Report ---
 
 /**
- * Combines Claude and GPT analyses into a markdown report.
+ * Combines Gemini and GPT analyses into a markdown report.
  * Each page shows both AIs' feedback side by side.
  */
-function generateReport(screenshots, claudeResults, gptResults) {
+function generateReport(screenshots, geminiResults, gptResults) {
   const lines = [
     '## 🔍 Visual Analysis Report',
     '',
-    '> Auto-generated by dual AI visual analysis (Claude + GPT)',
+    '> Auto-generated by dual AI visual analysis (Gemini + GPT)',
     `> Date: ${new Date().toISOString().split('T')[0]}`,
     '> This is an **advisory** check. Issues listed below are suggestions, not blocking.',
     '',
@@ -268,31 +258,31 @@ function generateReport(screenshots, claudeResults, gptResults) {
 
     for (const i of viewportIndices) {
       const screenshot = screenshots[i];
-      const claudeAnalysis = claudeResults[i];
+      const geminiAnalysis = geminiResults[i];
       const gptAnalysis = gptResults[i];
 
       // Check if either AI found issues
-      const claudeHasIssues = !claudeAnalysis.toLowerCase().includes('no issues found');
+      const geminiHasIssues = !geminiAnalysis.toLowerCase().includes('no issues found');
       const gptHasIssues = !gptAnalysis.toLowerCase().includes('no issues found');
-      const hasIssues = claudeHasIssues || gptHasIssues;
+      const hasIssues = geminiHasIssues || gptHasIssues;
       if (hasIssues) issueCount++;
 
       const icon = hasIssues ? '⚠️' : '✅';
       lines.push(`#### ${icon} ${screenshot.route}`);
       lines.push('');
 
-      // Claude's analysis
+      // Gemini's analysis
       lines.push('<details>');
-      lines.push(`<summary><strong>🟣 Claude Sonnet</strong> ${claudeHasIssues ? '— issues found' : '— no issues'}</summary>`);
+      lines.push(`<summary><strong>🔵 Gemini Pro</strong> ${geminiHasIssues ? '— issues found' : '— no issues'}</summary>`);
       lines.push('');
-      lines.push(claudeAnalysis);
+      lines.push(geminiAnalysis);
       lines.push('');
       lines.push('</details>');
       lines.push('');
 
       // GPT's analysis
       lines.push('<details>');
-      lines.push(`<summary><strong>🟢 GPT-4o</strong> ${gptHasIssues ? '— issues found' : '— no issues'}</summary>`);
+      lines.push(`<summary><strong>🟢 GPT o4-mini</strong> ${gptHasIssues ? '— issues found' : '— no issues'}</summary>`);
       lines.push('');
       lines.push(gptAnalysis);
       lines.push('');
@@ -324,17 +314,17 @@ async function main() {
   console.log(`\n📸 Took ${screenshots.length} screenshots\n`);
 
   // Step 2: Run both AIs in parallel for speed
-  console.log('🔍 Sending to Claude and GPT in parallel...\n');
-  const [claudeResults, gptResults] = await Promise.all([
-    analyzeWithClaude(screenshots),
+  console.log('🔍 Sending to Gemini and GPT in parallel...\n');
+  const [geminiResults, gptResults] = await Promise.all([
+    analyzeWithGemini(screenshots),
     analyzeWithGPT(screenshots),
   ]);
 
-  console.log(`\n✅ Claude analyzed ${claudeResults.length} screenshots`);
+  console.log(`\n✅ Gemini analyzed ${geminiResults.length} screenshots`);
   console.log(`✅ GPT analyzed ${gptResults.length} screenshots\n`);
 
   // Step 3: Generate and save the markdown report
-  const report = generateReport(screenshots, claudeResults, gptResults);
+  const report = generateReport(screenshots, geminiResults, gptResults);
   writeFileSync(REPORT_PATH, report);
   console.log(`📝 Report written to ${REPORT_PATH}`);
   console.log('\n' + report);

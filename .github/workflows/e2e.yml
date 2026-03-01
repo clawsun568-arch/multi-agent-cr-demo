@@ -7,7 +7,7 @@
 #    Runs on: every push to main AND every pull request.
 #
 # 2. visual-analysis (ADVISORY) — Takes screenshots of every page,
-#    sends them to Claude Vision AND GPT-4o Vision for dual AI layout
+#    sends them to Gemini Vision AND GPT o4-mini Vision for dual AI layout
 #    analysis, and posts the report as a PR comment. Never blocks merge.
 #    Runs on: pull requests only, after e2e-tests passes.
 
@@ -71,7 +71,7 @@ jobs:
 
   # ─── Job 2: Visual Analysis (advisory, PR-only) ────────────────────
   # Screenshots every page at desktop + mobile viewports, sends each to
-  # Claude Vision AND GPT-4o Vision for dual AI layout/quality analysis,
+  # Gemini Vision AND GPT o4-mini Vision for dual AI layout/quality analysis,
   # and posts the combined report as a PR comment. Uses continue-on-error
   # so failures never block the PR.
   visual-analysis:
@@ -110,13 +110,13 @@ jobs:
         run: npx wait-on http://localhost:4173 --timeout 15000
 
       # Run the dual AI visual analysis script. It takes ~14 screenshots
-      # and sends each to both Claude Vision and GPT-4o Vision.
+      # and sends each to both Gemini Vision and GPT o4-mini Vision.
       # Output: visual-report.md with both AIs' analyses side by side.
       # continue-on-error: true — if an AI call fails (rate limit, API key
       # missing, etc.), we don't fail the whole workflow.
       - name: Run visual analysis
         env:
-          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
         run: node scripts/visual-analysis.mjs
         continue-on-error: true

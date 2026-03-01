@@ -1,0 +1,94 @@
+name: Gemini Code Review
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  gemini-review:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Get PR diff
+        id: diff
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          PR_NUMBER=${{ github.event.pull_request.number }}
+          DIFF=$(gh pr diff "$PR_NUMBER" || echo "Failed to get diff")
+          # Save diff to file to avoid shell escaping issues
+          echo "$DIFF" > /tmp/pr_diff.txt
+
+      - name: Review with Gemini
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: |
+          if [ -z "$GEMINI_API_KEY" ]; then
+            echo "::error::GEMINI_API_KEY secret is not set. Add it in Repository Settings > Secrets and variables > Actions."
+            exit 1
+          fi
+
+          DIFF=$(cat /tmp/pr_diff.txt)
+
+          # Truncate diff if too large (max ~100k chars for API)
+          if [ ${#DIFF} -gt 100000 ]; then
+            DIFF="${DIFF:0:100000}
+
+          ... (diff truncated due to size)"
+          fi
+
+          # Build the JSON payload for Gemini API
+          PAYLOAD=$(jq -n \
+            --arg diff "$DIFF" \
+            --arg title "${{ github.event.pull_request.title }}" \
+            '{
+              contents: [
+                {
+                  parts: [
+                    {
+                      text: ("You are a senior code reviewer. Review the PR diff and provide concise, actionable feedback. Focus on: bugs, security vulnerabilities, performance issues, React/TypeScript best practices, and accessibility. If the code looks good, say so briefly. Format your review in markdown.\n\nPR Title: " + $title + "\n\nDiff:\n```\n" + $diff + "\n```\n\nPlease review this PR.")
+                    }
+                  ]
+                }
+              ],
+              generationConfig: {
+                maxOutputTokens: 4096
+              }
+            }')
+
+          RESPONSE=$(curl -s "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-pro-preview:generateContent?key=$GEMINI_API_KEY" \
+            -H "Content-Type: application/json" \
+            -d "$PAYLOAD")
+
+          # Extract the review text
+          REVIEW=$(echo "$RESPONSE" | jq -r '.candidates[0].content.parts[0].text // empty')
+
+          if [ -z "$REVIEW" ]; then
+            ERROR=$(echo "$RESPONSE" | jq -r '.error.message // "Unknown error"')
+            echo "::error::Gemini API call failed: $ERROR"
+            exit 1
+          fi
+
+          echo "$REVIEW" > /tmp/review.md
+
+      - name: Post review comment
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          PR_NUMBER=${{ github.event.pull_request.number }}
+          {
+            echo "## :sparkles: Gemini Code Review"
+            echo ""
+            cat /tmp/review.md
+            echo ""
+            echo "---"
+            echo "*Automated review by Gemini 3.1 Pro*"
+          } > /tmp/comment.md
+          gh pr comment "$PR_NUMBER" --body-file /tmp/comment.md
